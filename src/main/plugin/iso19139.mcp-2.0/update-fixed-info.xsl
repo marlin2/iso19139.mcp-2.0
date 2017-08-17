@@ -17,6 +17,24 @@
 	<xsl:variable name="metadataStandardName" select="'Australian Marine Community Profile of ISO 19115:2005/19139'"/>
 	<xsl:variable name="metadataStandardVersion" select="'2.0'"/>
 
+	<xsl:variable name="mapping" select="document('mcp-equipment/equipmentToDataParamsMapping.xml')"/>
+
+  <!-- The csv layout for each element in the above file is:
+                          1)OA_EQUIPMENT_ID,
+                          2)OA_EQUIPMENT_LABEL,
+                          3)AODN_PLATFORM,
+                          4)Platform IRI,
+                          5)AODN_INSTRUMENT,
+                          6)Instrument IRI,
+                          7)AODN_PARAMETER,
+                          8)Parameter IRI,
+                          9)AODN_UNITS,
+                          10)UNITS IRI
+        NOTE: can be multiple rows for each equipment keyword -->
+
+  <xsl:variable name="equipThesaurus" select="'geonetwork.thesaurus.register.equipment.urn:marlin.csiro.au:Equipment'"/>
+
+
 	<!-- ================================================================= -->
 	
 	<xsl:template match="/root">
@@ -132,10 +150,222 @@
           <xsl:apply-templates select="mcp:revisionDate"/>
         </xsl:otherwise>
       </xsl:choose>
-      <xsl:apply-templates select="mcp:metadataContactInfo"/>
+			<xsl:choose>
+        <!-- If new record then add current user as creator, IDC as 
+             pointOfContact and remove all processors and originators -->
+        <xsl:when test="/root/env/created">
+          <mcp:metadataContactInfo>
+            <mcp:CI_Responsibility>
+              <mcp:role>
+                <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="originator">originator</gmd:CI_RoleCode>
+              </mcp:role>
+              <xsl:call-template name="addCurrentUserAsParty"/>
+            </mcp:CI_Responsibility>
+          </mcp:metadataContactInfo>
+          <mcp:metadataContactInfo>
+            <mcp:CI_Responsibility>
+              <mcp:role>
+                <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+              </mcp:role>
+              <mcp:party xlink:href="{concat(/root/env/siteURL,'/subtemplate?uuid=urn:marlin.csiro.au:person:125_person_organisation')}"/>
+            </mcp:CI_Responsibility>
+          </mcp:metadataContactInfo>
+          <xsl:apply-templates select="mcp:metadataContactInfo[mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='processor' and mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='originator' and mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='pointOfContact']"/>
+        </xsl:when>
+        <!-- Add current user as processor, then process everything except the 
+             existing processor which will be excluded from the output
+             document - this is to ensure that only the latest user is
+             added as a processor - note: Marlin administrator is excluded from 
+             this role -->
+        <xsl:otherwise>
+          <xsl:choose>
+            <xsl:when test="/root/env/user/details/record/username!='admin'">
+              <!-- marlin admin does not replace a processor, so add it unless username!='admin' -->
+              <mcp:metadataContactInfo>
+                <mcp:CI_Responsibility>
+                  <mcp:role>
+                    <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="processor">processor</gmd:CI_RoleCode>
+                  </mcp:role>
+                  <xsl:call-template name="addCurrentUserAsParty"/>
+                </mcp:CI_Responsibility>
+              </mcp:metadataContactInfo>
+              <xsl:apply-templates select="mcp:metadataContactInfo[mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='processor']"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <!-- marlin admin does not replace a processor, so grab all mcp:metadataContactInfo -->
+              <xsl:apply-templates select="mcp:metadataContactInfo"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
 		</xsl:copy>
 	</xsl:template>
 
+	<!-- ================================================================= -->
+
+  <xsl:template name="addCurrentUserAsParty">
+              <mcp:party>
+                <mcp:CI_Organisation>
+                  <mcp:name>
+                    <gco:CharacterString><xsl:value-of select="/root/env/user/details/record/organisation"/></gco:CharacterString>
+                  </mcp:name>
+                  <mcp:individual>
+                    <mcp:CI_Individual>
+                      <mcp:name>
+                        <gco:CharacterString><xsl:value-of select="concat(/root/env/user/details/record/surname,', ',/root/env/user/details/record/name)"/></gco:CharacterString>
+                      </mcp:name>
+                    </mcp:CI_Individual>
+                  </mcp:individual>
+                </mcp:CI_Organisation>
+              </mcp:party>
+  </xsl:template>
+
+	<!-- ================================================================= -->
+
+  <xsl:template match="mcp:MD_DataIdentification" priority="100">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates select="gmd:citation"/>
+      <xsl:apply-templates select="gmd:abstract"/>
+      <xsl:apply-templates select="gmd:purpose"/>
+      <xsl:apply-templates select="gmd:credit"/>
+      <xsl:apply-templates select="gmd:status"/>
+      <xsl:apply-templates select="gmd:pointOfContact"/>
+      <xsl:apply-templates select="gmd:resourceMaintenance"/>
+      <xsl:apply-templates select="gmd:graphicOverview"/>
+      <xsl:apply-templates select="gmd:resourceFormat"/>
+      <xsl:apply-templates select="gmd:descriptiveKeywords"/>
+      <xsl:apply-templates select="gmd:resourceSpecificUsage"/>
+      <xsl:apply-templates select="gmd:resourceConstraints"/>
+      <xsl:apply-templates select="gmd:aggregationInfo"/>
+      <xsl:apply-templates select="gmd:spatialRepresentationType"/>
+      <xsl:apply-templates select="gmd:spatialResolution"/>
+      <xsl:apply-templates select="gmd:language"/>
+      <xsl:apply-templates select="gmd:characterSet"/>
+      <xsl:apply-templates select="gmd:topicCategory"/>
+      <xsl:apply-templates select="gmd:environmentDescription"/>
+      <xsl:apply-templates select="gmd:extent"/>
+      <xsl:apply-templates select="gmd:supplementalInformation"/>
+      <xsl:apply-templates select="mcp:samplingFrequency"/>
+
+      <!-- Add/Overwrite data parameters if we have an equipment keyword that matches one in our mapping -->
+      <!-- if we have an equipment thesaurus with a match keyword then we process -->
+
+      <xsl:variable name="equipPresent">
+       <xsl:for-each select="gmd:descriptiveKeywords/gmd:MD_Keywords[gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier/gmd:code/gmx:Anchor=$equipThesaurus]/gmd:keyword/gmx:Anchor">
+        <xsl:element name="dp">
+          <mcp:dataParameters>
+           <mcp:DP_DataParameters>
+           <xsl:variable name="currentKeyword" select="text()"/>
+           <!-- <xsl:comment>Automatically created dp from <xsl:value-of select="$currentKeyword"/></xsl:comment> -->
+           <xsl:for-each select="$mapping/map/equipment">
+              <xsl:variable name="tokens" select="tokenize(string(),',')"/>
+              <!-- <xsl:message>Checking <xsl:value-of select="$tokens[2]"/></xsl:message> -->
+              <xsl:if test="$currentKeyword=$tokens[2]">
+                 <xsl:message>KW MATCHED TOKEN: <xsl:value-of select="$tokens[2]"/></xsl:message>
+                 <xsl:call-template name="fillOutDataParameters">
+ 										<xsl:with-param name="tokens" select="$tokens"/> 
+                 </xsl:call-template>
+              </xsl:if>
+           </xsl:for-each>
+           </mcp:DP_DataParameters>
+          </mcp:dataParameters>
+        </xsl:element>
+		   </xsl:for-each>
+      </xsl:variable>
+
+      <!-- Now copy the constructed data parameters into the record -->
+      <xsl:for-each select="$equipPresent/dp/mcp:dataParameters[count(mcp:DP_DataParameters/*) > 0]">
+      	<xsl:copy-of select="."/>
+      </xsl:for-each>
+
+			<!-- Finally, copy in the resourceContactInfo -->
+      <xsl:apply-templates select="mcp:resourceContactInfo"/>
+   
+    </xsl:copy>
+  </xsl:template> 
+
+	<!-- ================================================================= -->
+
+  <xsl:template name="fillOutDataParameters">
+    <xsl:param name="tokens"/>
+
+    <mcp:dataParameter>
+      <mcp:DP_DataParameter>
+      	<mcp:parameterName>
+					<mcp:DP_Term>
+						<mcp:term>
+							<gco:CharacterString><xsl:value-of select="$tokens[7]"/></gco:CharacterString>
+						</mcp:term>
+						<mcp:type>
+							<mcp:DP_TypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#DP_TypeCode" codeListValue="longName">longName</mcp:DP_TypeCode>
+						</mcp:type>
+						<mcp:usedInDataset>
+							<gco:Boolean>false</gco:Boolean>
+						</mcp:usedInDataset>
+						<mcp:vocabularyTermURL>
+							<gmd:URL><xsl:value-of select="$tokens[8]"/></gmd:URL>
+						</mcp:vocabularyTermURL>
+					</mcp:DP_Term>
+			  </mcp:parameterName>
+				<mcp:parameterUnits>
+					<mcp:DP_Term>
+						<mcp:term>
+							<gco:CharacterString><xsl:value-of select="$tokens[9]"/></gco:CharacterString>
+						</mcp:term>
+						<mcp:type>
+							<mcp:DP_TypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#DP_TypeCode" codeListValue="longName">longName</mcp:DP_TypeCode>
+						</mcp:type>
+						<mcp:usedInDataset>
+							<gco:Boolean>false</gco:Boolean>
+						</mcp:usedInDataset>
+						<mcp:vocabularyTermURL>
+							<gmd:URL><xsl:value-of select="$tokens[10]"/></gmd:URL>
+						</mcp:vocabularyTermURL>
+					</mcp:DP_Term>
+				</mcp:parameterUnits>
+				<mcp:parameterMinimumValue gco:nilReason="missing">
+					<gco:CharacterString/>
+				</mcp:parameterMinimumValue>
+				<mcp:parameterMaximumValue gco:nilReason="missing">
+					<gco:CharacterString/>
+				</mcp:parameterMaximumValue>
+        <mcp:parameterDeterminationInstrument>
+					<mcp:DP_Term>
+						<mcp:term>
+							<gco:CharacterString><xsl:value-of select="$tokens[5]"/></gco:CharacterString>
+						</mcp:term>
+						<mcp:type>
+							<mcp:DP_TypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#DP_TypeCode" codeListValue="longName">longName</mcp:DP_TypeCode>
+						</mcp:type>
+						<mcp:usedInDataset>
+							<gco:Boolean>false</gco:Boolean>
+						</mcp:usedInDataset>
+						<mcp:vocabularyTermURL>
+							<gmd:URL><xsl:value-of select="$tokens[6]"/></gmd:URL>
+						</mcp:vocabularyTermURL>
+					</mcp:DP_Term>
+				</mcp:parameterDeterminationInstrument>
+        <mcp:platform>
+					<mcp:DP_Term>
+						<mcp:term>
+							<gco:CharacterString><xsl:value-of select="$tokens[3]"/></gco:CharacterString>
+						</mcp:term>
+						<mcp:type>
+							<mcp:DP_TypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#DP_TypeCode" codeListValue="longName">longName</mcp:DP_TypeCode>
+						</mcp:type>
+						<mcp:usedInDataset>
+							<gco:Boolean>false</gco:Boolean>
+						</mcp:usedInDataset>
+						<mcp:vocabularyTermURL>
+							<gmd:URL><xsl:value-of select="$tokens[4]"/></gmd:URL>
+						</mcp:vocabularyTermURL>
+					</mcp:DP_Term>
+				</mcp:platform>
+      </mcp:DP_DataParameter>
+    </mcp:dataParameter>
+  </xsl:template>
+	
 	<!-- ================================================================= -->
 
 	<xsl:template match="gmd:MD_Distribution">
@@ -157,6 +387,23 @@
 				</xsl:choose>
 		 </xsl:copy>
 	</xsl:template>
+
+	<!-- ================================================================= -->
+
+  <!-- 
+  <gmd:identifier xlink:title="Marlin Record Number">
+    <gmd:MD_Identifier>
+    <gmd:code>
+      <gco:CharacterString>Marlin Record Number: 14564</gco:CharacterString>
+    </gmd:code>
+    ..
+
+    Must not be copied on create/clone
+  -->
+  <xsl:template match="gmd:identifier[starts-with(gmd:MD_Identifier/gmd:code/gco:CharacterString,'Marlin Record Number') and /root/env/created]" priority="10000"/>
+
+  <xsl:template match="gmd:identifier[starts-with(gmd:MD_Identifier/gmd:code/gco:CharacterString,'Anzlic Identifier') and /root/env/created]" priority="10000"/>
+
 
 	<!-- ================================================================= -->
 	
@@ -217,7 +464,7 @@
 
 	<xsl:template match="gmd:dateStamp">
 		<xsl:choose>
-			<xsl:when test="/root/env/changeDate">
+			<xsl:when test="/root/env/changeDate and normalize-space(text())!=''">
 				<gmd:dateStamp>
 					<gco:DateTime><xsl:value-of select="/root/env/changeDate"/></gco:DateTime>
 				</gmd:dateStamp>
