@@ -179,7 +179,7 @@
              this role -->
         <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="/root/env/user/details/record/username!='admin'">
+            <xsl:when test="/root/env/user/details/username!='admin'">
               <!-- marlin admin does not replace a processor, so add it unless username!='admin' -->
               <mcp:metadataContactInfo>
                 <mcp:CI_Responsibility>
