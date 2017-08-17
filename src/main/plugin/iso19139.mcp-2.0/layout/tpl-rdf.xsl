@@ -20,6 +20,7 @@
   xmlns:ogc="http://www.opengis.net/rdf#"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:iso19139="http://geonetwork-opensource.org/schemas/iso19139"
+	xmlns:iso19139mcp20="http://geonetwork-opensource.org/schemas/iso19139mcp-2.0"
   extension-element-prefixes="saxon" exclude-result-prefixes="#all">
 
 
@@ -139,7 +140,46 @@
         
       </dcat:Distribution>
     </xsl:for-each-group>
-    
+   
+		<!-- Cope with mcp experimental CI_Organisation and CI_Individual 
+         taken from ISO19115-1 -->
+    <xsl:for-each-group select="//mcp:CI_Organisation[mcp:name/gco:CharacterString!='']" group-by="mcp:name/gco:CharacterString">
+      <!-- Organization description. 
+        Organization could be linked to a catalogue, a catalogue record.
+        
+        xpath: //mcp:CI_Organisation/mcp:name
+      -->
+      <foaf:Organization rdf:about="{$url}/organization/{encode-for-uri(current-grouping-key())}">
+        <foaf:name><xsl:value-of select="current-grouping-key()"/></foaf:name>
+        <!-- xpath: mcp:name/gco:CharacterString -->
+        <xsl:for-each-group select="//mcp:CI_Organisation[mcp:name/gco:CharacterString=current-grouping-key()]" group-by="mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString">
+          <foaf:member rdf:resource="{$url}/organization/{encode-for-uri(iso19139mcp20:getContactId(.))}"/>
+        </xsl:for-each-group>
+      </foaf:Organization>
+    </xsl:for-each-group>
+
+
+    <xsl:for-each-group select="//mcp:CI_Organisation" group-by="mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString">
+      <!-- Organization member
+        
+        xpath: //mcp:CI_Organisation/mcp:individual/mcp:CI_Individual -->
+
+      <foaf:Agent rdf:about="{$url}/person/{encode-for-uri(iso19139:getContactId(.))}">
+        <xsl:if test="mcp:individual/mcp:CI_Individual/mcp:name/gco:CharacterString">
+          <foaf:name><xsl:value-of select="mcp:individual/mcp:CI_Individual/mcp:name/gco:CharacterString"/></foaf:name>
+        </xsl:if>
+        <!-- xpath: mcp:name/gco:CharacterString -->
+        <xsl:if test="mcp:individual/mcp:CI_Individual/mcp:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:voice/gco:CharacterString">
+          <foaf:phone><xsl:value-of select="mcp:individual/mcp:CI_Individual/mcp:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:voice/gco:CharacterString"/></foaf:phone>
+        </xsl:if>
+        <!-- xpath: mcp:individual/mcp:CI_Individual/mcp:contactInfo/gmd:CI_Contact/gmd:phone/gmd:CI_Telephone/gmd:voice/gco:CharacterString -->
+        <xsl:if test="mcp:individual/mcp:CI_Individual/mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString">
+          <foaf:mbox rdf:resource="mailto:{mcp:individual/mcp:CI_Individual/mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString}"/>
+        </xsl:if>
+        <!-- xpath: mcp:individual/mcp:CI_Individual/mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString -->
+      </foaf:Agent>
+    </xsl:for-each-group>
+ 
     <xsl:for-each-group select="//gmd:CI_ResponsibleParty[gmd:organisationName/gco:CharacterString!='']" group-by="gmd:organisationName/gco:CharacterString">
       <!-- Organization description. 
         Organization could be linked to a catalogue, a catalogue record.
@@ -298,6 +338,12 @@
       <dct:publisher rdf:resource="{$url}/organization/{encode-for-uri(.)}"/>
     </xsl:for-each>
     <!-- xpath: gmd:identificationInfo/*/gmd:pointOfContact -->
+
+    <!-- "An entity responsible for making the dataset available" -->
+    <xsl:for-each select="mcp:resourceContactInfo/*/mcp:party/mcp:CI_Organisation/mcp:name/gco:CharacterString[.!='']">
+      <dct:publisher rdf:resource="{$url}/organization/{encode-for-uri(.)}"/>
+    </xsl:for-each>
+    <!-- xpath: gmd:identificationInfo/*/gmd:pointOfContact -->
     
     <!-- "The frequency with which dataset is published." See placetime.com intervals. -->
     <xsl:for-each select="gmd:resourceMaintenance/gmd:MD_MaintenanceInformation/gmd:maintenanceAndUpdateFrequency/gmd:MD_MaintenanceFrequencyCode">
@@ -401,5 +447,16 @@
     <!-- FIXME ? 
       <void:dataDump></void:dataDump>-->
   </xsl:template>
-  
+
+	<!-- 
+    Get contact identifier (for the time being = email and node generated identifier if no email available)
+  -->
+  <xsl:function name="iso19139mcp20:getContactId" as="xs:string">
+    <xsl:param name="responsibleParty" as="node()"/>
+
+    <xsl:value-of select="if ($responsibleParty/mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString!='')
+      then $responsibleParty/mcp:contactInfo/gmd:CI_Contact/gmd:address/gmd:CI_Address/gmd:electronicMailAddress/gco:CharacterString
+      else generate-id($responsibleParty)"/>
+  </xsl:function>  
+
 </xsl:stylesheet>

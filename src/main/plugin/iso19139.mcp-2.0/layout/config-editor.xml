@@ -7,7 +7,7 @@
   xmlns:gmx="http://www.isotc211.org/2005/gmx"
   xmlns:srv="http://www.isotc211.org/2005/srv"
   xmlns:gml="http://www.opengis.net/gml"
-	xmlns:mcp="http://schemas.aodn.org.au/mcp-2.0"
+	xmlns:mcp="http://bluenet3.antcrc.utas.edu.au/mcp"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <!-- Form field type configuration. Default is text. -->
@@ -55,62 +55,54 @@
 
     <for name="gmd:referenceSystemInfo" addDirective="data-gn-crs-selector"/>
 
-    <for name="mcp:party" addDirective="data-gn-organisation-entry-selector">
-      <directiveAttributes data-schema="iso19139.mcp-2.0"/>
-		</for>
+    <for name="mcp:party" addDirective="data-gn-directory-entry-selector">
+      <directiveAttributes
+            data-schema="iso19139.mcp"
+            data-template-add-action="true"
+            data-template-type="party"/>
+    </for>
     
     <for name="gmd:contact" addDirective="data-gn-directory-entry-selector">
-      <directiveAttributes 
-					data-schema="iso19139.mcp-2.0"
-					data-template-add-action="true"
-					data-template-type="contact"
-					data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
+      <directiveAttributes
+						data-schema="iso19139.mcp"
+            data-template-add-action="true"
+            data-template-type="contact"
+            data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:pointOfContact" addDirective="data-gn-directory-entry-selector">
-      <directiveAttributes 
-					data-schema="iso19139.mcp-2.0"
-					data-template-add-action="true"
-					data-template-type="contact"
-					data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
+      <directiveAttributes
+						data-schema="iso19139.mcp"
+            data-template-add-action="true"
+            data-template-type="contact"
+            data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:distributorContact" addDirective="data-gn-directory-entry-selector">
-      <directiveAttributes 
-					data-schema="iso19139.mcp-2.0"
-					data-template-add-action="true"
-					data-template-type="contact"
-					data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
+      <directiveAttributes
+						data-schema="iso19139.mcp"
+            data-template-add-action="true"
+            data-template-type="contact"
+            data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:processor" addDirective="data-gn-directory-entry-selector">
-      <directiveAttributes 
-					data-schema="iso19139.mcp-2.0"
-					data-template-add-action="true"
-					data-template-type="contact"
-					data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
+      <directiveAttributes
+						data-schema="iso19139.mcp"
+            data-template-add-action="true"
+            data-template-type="contact"
+            data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:citedResponsibleParty" addDirective="data-gn-directory-entry-selector">
-      <directiveAttributes 
-					data-schema="iso19139.mcp-2.0"
-					data-template-add-action="false"
-					data-template-type="contact"
-					data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
+      <directiveAttributes
+						data-schema="iso19139.mcp"
+            data-template-add-action="false"
+            data-template-type="contact"
+            data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:descriptiveKeywords" addDirective="data-gn-thesaurus-selector"/>
-
-		<!-- use thesaurus selector for mcp:parameterName and parameterUnits but
-		     specify an extra directive attribute to transform to mcp:DP_Term -->
-    <for name="mcp:parameterName" addDirective="data-gn-thesaurus-selector">
-      <directiveAttributes data-transformation="to-mcp-dataparameterterm"/>
-		</for>
-
-    <for name="mcp:parameterUnits" addDirective="data-gn-thesaurus-selector">
-      <directiveAttributes data-transformation="to-mcp-dataparameterterm"/>
-		</for>
-
     <for name="mcp:MD_Commons" addDirective="data-gn-commons-jurisdiction-selector"/>
   </fields>
 
@@ -123,17 +115,18 @@
     <name>gmd:portrayalCatalogueCitation</name>
     <name>gmd:thesaurusName</name>
     <name>gmd:spatialRepresentationInfo</name>
-    <name>gmd:pointOfContact</name>
-    <name>gmd:contact</name>
+		<name>mcp:extent</name>
+		<name>mcp:party</name>
+		<name>mcp:individual</name>
+		<name>mcp:contactInfo</name>
     <name>gmd:citedResponsibleParty</name>
     <name>gmd:dataQualityInfo</name>
-    <name>gmd:contentInfo</name>
     <name>gmd:distributionFormat</name>
+    <name>gmd:contentInfo</name>
     <name>gmd:referenceSystemInfo</name>
-    <name>gmd:spatialResolution</name>
     <name>gmd:offLine</name>
     <name>gmd:onLine</name>
-		<name>gmd:graphicOverview</name>
+    <name>gmd:graphicOverview</name>
     <name>gmd:address</name>
     <name>gmd:projection</name>
     <name>gmd:ellipsoid</name>
@@ -148,7 +141,9 @@
     <name>gmd:aggregationInfo</name>
     <name>gmd:processStep</name>
     <name>gmd:lineage</name>
-    <name>mcp:dataParameters</name>
+		<name>mcp:dataParameters</name>
+		<name>mcp:resourceContactInfo</name>
+		<name>mcp:metadataContactInfo</name>
   </fieldsWithFieldset>
 
   <multilingualFields>
@@ -222,35 +217,140 @@
   <!-- View configuration -->
   <views>
     <view name="default">
-      <tab id="default" default="true" mode="flat">
-        <section name="gmd:identificationInfo">
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation"/>
+			<tab id="resourceCitation" default="true" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:alternateTitle" or="alternateTitle" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:credit" or="credit" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+				</section>
+			</tab>
+
+      <tab id="resourceDescription" mode="flat">
+        <section name=" ">
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:abstract"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:purpose"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:credit"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:status"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:pointOfContact" or="pointOfContact" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+          <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevel" or="hierarchyLevel" in="/mcp:MD_Metadata"/>
+          <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevelName" or="hierarchyLevelName" in="/mcp:MD_Metadata"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:supplementalInformation" or="supplementalInformation" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance"/>
-					<field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:graphicOverview"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceFormat"/>
+				</section>
+			</tab>
+
+			<tab id="resourceKeywords" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:topicCategory" or="topicCategory" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:descriptiveKeywords" or="descriptiveKeywords" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceSpecficUsage"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceConstraints"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:aggregationInfo"/>
+				</section>
+			</tab>
+
+
+			<tab id="contacts" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:pointOfContact" notDisplayedIfMissing="true"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:resourceContactInfo" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+					<!-- always display an add action that will add a new 
+					     resourceContactInfo block with just the role and
+							 party in it -->
+          <action type="add" name="resourceContactInfo" or="resourceContactInfo" if="true()" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
+            <template>
+              <snippet>
+                <mcp:resourceContactInfo>
+									<mcp:CI_Responsibility>
+									  <mcp:role>
+											<gmd:CI_RoleCode codeList="http://bluenet3.antcrc.utas.edu.au/mcp-1.5-experimental/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
+										</mcp:role>
+									</mcp:CI_Responsibility>
+                </mcp:resourceContactInfo>
+              </snippet>
+            </template>
+          </action>
+
+          <field xpath="/mcp:MD_Metadata/gmd:contact" notDisplayedIfMissing="true"/>
+          <field xpath="/mcp:MD_Metadata/mcp:metadataContactInfo" in="/mcp:MD_Metadata"/>
+					<!-- always display an add action that will add a new 
+					     metadataContactInfo block with just the role and
+							 party in it -->
+							 <!--
+          <action type="add" name="metadataContactInfo" or="metadataContactInfo" if="true()" in="/mcp:MD_Metadata">
+            <template>
+              <snippet>
+                <mcp:metadataContactInfo>
+									<mcp:CI_Responsibility>
+									  <mcp:role>
+											<gmd:CI_RoleCode codeList="http://bluenet3.antcrc.utas.edu.au/mcp-1.5-experimental/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
+										</mcp:role>
+									</mcp:CI_Responsibility>
+                </mcp:metadataContactInfo>
+              </snippet>
+            </template>
+          </action>
+					      -->
+				</section>
+			</tab>
+
+			<tab id="resourceExtents" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:samplingFrequency"/>
+				</section>
+			</tab>
+
+			<tab id="resourceSpatial" mode="flat">
+				<section name=" ">
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:spatialRepresentationType"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:spatialResolution"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:language"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:characterSet"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:topicCategory"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:environmentDescription"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:supplementalInformation"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:samplingFrequency"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:sensor" notDisplayedIfMissing="true"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:sensorCalibrationProcess" notDisplayedIfMissing="true"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:dataParameters" or="dataParameters" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+					<field xpath="/mcp:MD_Metadata/gmd:referenceSystemInfo" or="referenceSystemInfo" in="/mcp:MD_Metadata"/>
+				</section>
+			</tab>
 
-					<!-- Data Quality Section -->
+			<tab id="constraints" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceConstraints" or="resourceConstraints" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+				</section>
+			</tab>
+				
+				<!--
+			<tab id="dataParameters" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:dataParameters" or="dataParameters" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+				</section>
+			</tab>
+			-->
+			
+			<tab id="resourceLineageTab" mode="flat">
+        <section name="gmd:lineage">
+          <field name="lineage"
+            xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement"/>
+          <action type="add" name="lineage" or="statement"
+                  in="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage">
+            <template>
+              <snippet>
+                <gmd:statement>
+                  <gco:CharacterString></gco:CharacterString>
+                </gmd:statement>
+              </snippet>
+            </template>
+          </action>
+          <action type="add" name="lineage" or="lineage"
+                  in="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality">
+            <template>
+              <snippet>
+                <gmd:lineage>
+                  <gmd:LI_Lineage>
+                    <gmd:statement>
+                      <gco:CharacterString></gco:CharacterString>
+                    </gmd:statement>
+                  </gmd:LI_Lineage>
+                </gmd:lineage>
+              </snippet>
+            </template>
+          </action>
+				</section>
+			</tab>
+			
+			<tab id="dataQualityInfo" mode="flat">
+        <section name=" ">
 
 					<!-- DQ_CompletenessOmission -->
           <field name="completenessOmission" templateModeOnly="true" isMissingLabel="notEvaluated" xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report[gmd:DQ_CompletenessOmission]" del=".">
@@ -499,64 +599,33 @@
               </snippet>
             </template>
         	</field>
+				</section>
+			</tab>
 
-          <field name="lineage"
-            xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage/gmd:statement"/>
-
-          <action type="add" name="lineage" or="statement"
-                  in="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:lineage/gmd:LI_Lineage">
-            <template>
-              <snippet>
-                <gmd:statement>
-                  <gco:CharacterString></gco:CharacterString>
-                </gmd:statement>
-              </snippet>
-            </template>
-          </action>
-          <action type="add" name="lineage" or="lineage"
-                  in="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality">
-            <template>
-              <snippet>
-                <gmd:lineage>
-                  <gmd:LI_Lineage>
-                    <gmd:statement>
-                      <gco:CharacterString></gco:CharacterString>
-                    </gmd:statement>
-                  </gmd:LI_Lineage>
-                </gmd:lineage>
-              </snippet>
-            </template>
-          </action>
-        </section>
-        <section xpath="/mcp:MD_Metadata/gmd:distributionInfo" or="distributionInfo" in="/mcp:MD_Metadata"/>
-				<section xpath="/mcp:MD_Metadata/gmd:referenceSystemInfo" or="referenceSystemInfo" in="/mcp:MD_Metadata"/>
-        <section name="mcp:MD_Metadata">
-          <field xpath="/mcp:MD_Metadata/gmd:fileIdentifier"/>
-          <field xpath="/mcp:MD_Metadata/gmd:language" or="language" in="/mcp:MD_Metadata"/>
-          <field xpath="/mcp:MD_Metadata/gmd:characterSet"/>
-          <field xpath="/mcp:MD_Metadata/gmd:parentIdentifier" or="parentIdentifier"
-                 in="/mcp:MD_Metadata"/>
-          <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevel" or="hierarchyLevel"
-                 in="/mcp:MD_Metadata"/>
-          <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevelName" or="hierarchyLevelName"
-                 in="/mcp:MD_Metadata"/>
-          <field xpath="/mcp:MD_Metadata/gmd:dateStamp"/>
-          <field xpath="/mcp:MD_Metadata/mcp:revisionDate"/>
-          <field xpath="/mcp:MD_Metadata/gmd:metadataStandardName"/>
-          <field xpath="/mcp:MD_Metadata/gmd:metadataStandardVersion"/>
-          <field xpath="/mcp:MD_Metadata/gmd:contact" or="contact"
-								 in="/mcp:MD_Metadata"/>
-          <!-- These are not often used in mcp so leave them out of the default
-					     mode
-					<field xpath="/mcp:MD_Metadata/gmd:dataSetURI" or="dataSetURI" in="/mcp:MD_Metadata"/> 
-          <field xpath="/mcp:MD_Metadata/gmd:locale" or="locale" in="/mcp:MD_Metadata"/>
-          <field xpath="/mcp:MD_Metadata/gmd:series"/>
-          <field xpath="/mcp:MD_Metadata/gmd:describes"/>
-          <field xpath="/mcp:MD_Metadata/gmd:propertyType"/>
-          <field xpath="/mcp:MD_Metadata/gmd:featureType"/>
-          <field xpath="/mcp:MD_Metadata/gmd:featureAttribute"/> 
-					-->
-        </section>
+			<tab id="distribution" mode="flat">
+				<section name=" ">
+          <field xpath="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat" in="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution"/>
+					<action type="add" if="count(mcp:MD_Metadata/gmd:distributionInfo)>0" name="distributionFormat" or="distributionFormat" in="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution">
+						<template>
+							<snippet>
+                <gmd:distributionFormat>
+                  <gmd:MD_Format>
+                    <gmd:name>
+                      <gco:CharacterString/>
+                    </gmd:name>
+                    <gmd:version>
+                      <gco:CharacterString/>
+                    </gmd:version>
+                  </gmd:MD_Format>
+                </gmd:distributionFormat>
+							</snippet>
+						</template>
+					</action>
+				</section>
+				<section name=" ">
+					<text ref="useAssociatedResources"/>
+          <field xpath="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString!='WWW:LINK-1.0-http--metadata-URL']" in="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions"/>
+				</section>
       </tab>
       
       <!-- Elements that should not use the "flat" mode --> 
@@ -566,6 +635,7 @@
 				<for name="mcp:MD_Commons"/>
       </flatModeExceptions>
     </view>
+
     <view name="advanced">
       <tab id="All" default="true">
         <section xpath="/mcp:MD_Metadata/gmd:identificationInfo" or="identificationInfo"
@@ -576,8 +646,9 @@
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:credit"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:status"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:pointOfContact"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:resourceContactInfo" notDisplayedIfMissing="true"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance"/>
-					<field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:graphicOverview"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:graphicOverview"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceFormat"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:descriptiveKeywords"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceSpecficUsage"/>
@@ -622,6 +693,7 @@
           <field xpath="/mcp:MD_Metadata/gmd:metadataStandardName"/>
           <field xpath="/mcp:MD_Metadata/gmd:metadataStandardVersion"/>
           <field xpath="/mcp:MD_Metadata/gmd:contact"/>
+          <field xpath="/mcp:MD_Metadata/mcp:metadataContactInfo" notDisplayedIfMissing="true"/>
 					<!-- Not often used in MCP so exclude them for now
           <field xpath="/mcp:MD_Metadata/gmd:dataSetURI" or="dataSetURI" in="/mcp:MD_Metadata"/>
           <field xpath="/mcp:MD_Metadata/gmd:locale" or="locale" in="/mcp:MD_Metadata"/>

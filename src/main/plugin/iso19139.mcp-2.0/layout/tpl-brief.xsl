@@ -57,8 +57,8 @@
 			<xsl:choose>
 
 				<!-- 1. role=moralRightsOwner -->
-				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='moralRightsOwner']">
-					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='moralRightsOwner']">
+				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='moralRightsOwner']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='moralRightsOwner']">
+					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='moralRightsOwner']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='moralRightsOwner']">
 						<moralrightsowner>
 							<xsl:apply-templates mode="responsiblepartyprocessor" select="."/>
 						</moralrightsowner>
@@ -66,8 +66,8 @@
 				</xsl:when>
 
 				<!-- 2. role=ipOwner -->
-				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='ipOwner']">
-					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='ipOwner']">
+				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='ipOwner']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='ipOwner']">
+					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='ipOwner']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='ipOwner']">
 						<ipOwner>
 							<xsl:apply-templates mode="responsiblepartyprocessor" select="."/>
 						</ipOwner>
@@ -75,8 +75,8 @@
 				</xsl:when>
 
 				<!-- 3. role=owner -->
-				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='owner']">
-					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='licensor']">
+				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='owner']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='owner']">
+					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='licensor']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='owner']">
 						<owner>
 							<xsl:apply-templates mode="responsiblepartyprocessor" select="."/>
 						</owner>
@@ -84,8 +84,8 @@
 				</xsl:when>
 
 				<!-- 4. role=principalInvestigator -->
-				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='principalInvestigator']">
-					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='principalInvestigator']">
+				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='principalInvestigator']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='principalInvestigator']">
+					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='principalInvestigator']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='principalInvestigator']">
 						<principalInvestigator>
 							<xsl:apply-templates mode="responsiblepartyprocessor" select="."/>
 						</principalInvestigator>
@@ -93,8 +93,8 @@
 				</xsl:when>
 
 				<!-- 5. role=licensor -->
-				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='licensor']">
-					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='licensor']">
+				<xsl:when test="gmd:pointOfContact/*[gmd:role/*/@codeListValue='licensor']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='licensor']">
+					<xsl:for-each select="gmd:pointOfContact/*[gmd:role/*/@codeListValue='licensor']|mcp:resourceContactInfo/*[gmd:role/*/@codeListValue='licensor']">
 						<licensor>
 							<xsl:apply-templates mode="responsiblepartyprocessor" select="."/>
 						</licensor>
@@ -115,6 +115,20 @@
 				</taxonomicCoverage>
 			</xsl:for-each>
 		</xsl:for-each>
+
+		<xsl:for-each select="mcp:resourceContactInfo/*|mcp:metadataContactInfo/*">
+      <xsl:variable name="role" select="mcp:role/*/@codeListValue"/>
+      <xsl:if test="normalize-space($role)!=''">
+        <responsibleParty role="{$role}" appliesTo="resource">
+          <xsl:if test="descendant::*/gmx:FileName">
+            <xsl:attribute name="logo">
+              <xsl:value-of select="descendant::*/gmx:FileName/@src"/>
+            </xsl:attribute>
+          </xsl:if>
+          <xsl:apply-templates mode="responsiblepartyprocessor" select="."/>
+        </responsibleParty>
+      </xsl:if>
+    </xsl:for-each>
 
   </xsl:template>
 
