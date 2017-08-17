@@ -207,12 +207,12 @@
               <mcp:party>
                 <mcp:CI_Organisation>
                   <mcp:name>
-                    <gco:CharacterString><xsl:value-of select="/root/env/user/details/record/organisation"/></gco:CharacterString>
+                    <gco:CharacterString><xsl:value-of select="/root/env/user/details/organisation"/></gco:CharacterString>
                   </mcp:name>
                   <mcp:individual>
                     <mcp:CI_Individual>
                       <mcp:name>
-                        <gco:CharacterString><xsl:value-of select="concat(/root/env/user/details/record/surname,', ',/root/env/user/details/record/name)"/></gco:CharacterString>
+                        <gco:CharacterString><xsl:value-of select="concat(/root/env/user/details/surname,', ',/root/env/user/details/name)"/></gco:CharacterString>
                       </mcp:name>
                     </mcp:CI_Individual>
                   </mcp:individual>
