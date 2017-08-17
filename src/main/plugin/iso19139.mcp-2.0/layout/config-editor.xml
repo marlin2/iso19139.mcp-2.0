@@ -7,7 +7,7 @@
   xmlns:gmx="http://www.isotc211.org/2005/gmx"
   xmlns:srv="http://www.isotc211.org/2005/srv"
   xmlns:gml="http://www.opengis.net/gml"
-	xmlns:mcp="http://bluenet3.antcrc.utas.edu.au/mcp"
+	xmlns:mcp="http://schemas.aodn.org.au/mcp-2.0"
   xmlns:xlink="http://www.w3.org/1999/xlink">
 
   <!-- Form field type configuration. Default is text. -->
@@ -57,14 +57,14 @@
 
     <for name="mcp:party" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-            data-schema="iso19139.mcp"
+            data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
             data-template-type="party"/>
     </for>
     
     <for name="gmd:contact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp"
+						data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
             data-template-type="contact"
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
@@ -72,7 +72,7 @@
 
     <for name="gmd:pointOfContact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp"
+						data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
             data-template-type="contact"
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
@@ -80,7 +80,7 @@
 
     <for name="gmd:distributorContact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp"
+						data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
             data-template-type="contact"
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
@@ -88,7 +88,7 @@
 
     <for name="gmd:processor" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp"
+						data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
             data-template-type="contact"
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
@@ -96,7 +96,7 @@
 
     <for name="gmd:citedResponsibleParty" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp"
+						data-schema="iso19139.mcp-2.0"
             data-template-add-action="false"
             data-template-type="contact"
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
@@ -258,7 +258,7 @@
                 <mcp:resourceContactInfo>
 									<mcp:CI_Responsibility>
 									  <mcp:role>
-											<gmd:CI_RoleCode codeList="http://bluenet3.antcrc.utas.edu.au/mcp-1.5-experimental/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
+											<gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
 										</mcp:role>
 									</mcp:CI_Responsibility>
                 </mcp:resourceContactInfo>
@@ -278,7 +278,7 @@
                 <mcp:metadataContactInfo>
 									<mcp:CI_Responsibility>
 									  <mcp:role>
-											<gmd:CI_RoleCode codeList="http://bluenet3.antcrc.utas.edu.au/mcp-1.5-experimental/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
+											<gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
 										</mcp:role>
 									</mcp:CI_Responsibility>
                 </mcp:metadataContactInfo>
