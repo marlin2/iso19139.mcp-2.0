@@ -35,8 +35,120 @@ Reorganise for MCP 1.4
 Simon Pigot, March 2013  
 Version 2.0 changes: mcp:taxonomicCoverage and mcp:dataParameter mods
 
+Simon Pigot, July 2017
+Add new CI_Responsibility from ISO19115 revision to allow better re-use
+of organisation and individual contact details around roles - this adds:
+CI_Citation/responsibleParty/CI_Responsibility and
+MD_Metadata/metadataContactInfo/CI_Responsibility
+MD_DataIdentification/resourceContactInfo/CI_Responsibility
 		</xs:documentation>
 	</xs:annotation>
+
+
+<!-- ====================================================================== -->
+<!-- Extensions for CI_Responsibility                                       -->
+<!-- ====================================================================== -->
+
+	<xs:complexType name="CI_Responsibility_PropertyType">
+		<xs:sequence minOccurs="0">
+			<xs:element ref="mcp:CI_Responsibility"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="gco:ObjectReference"/>
+		<xs:attribute ref="gco:nilReason"/>
+	</xs:complexType>
+
+	<xs:element name="CI_Responsibility" type="mcp:CI_Responsibility_Type"/>
+
+	<xs:complexType name="CI_Responsibility_Type">
+		<xs:annotation>
+			<xs:documentation>Identification of, and means of communication with, person(s) and organisations associated with the dataset but with different organisation to CI_ResponsibleParty_Type</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gco:AbstractObject_Type">
+				<xs:sequence>
+					<xs:element name="role" type="gmd:CI_RoleCode_PropertyType" maxOccurs="unbounded"/>
+					<xs:element name="extent" type="gmd:EX_Extent_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="party" type="mcp:CI_Party_PropertyType" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+<!-- ====================================================================== -->
+
+	<xs:complexType name="AbstractCI_Party_Type" abstract="true">
+    <xs:annotation>
+      <xs:documentation>Abstract party information</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="gco:AbstractObject_Type">
+        <xs:sequence>
+					<xs:element name="name" type="gco:CharacterString_PropertyType" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="contactInfo" type="gmd:CI_Contact_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+	
+	<xs:element name="AbstractCI_Party" type="mcp:AbstractCI_Party_Type" abstract="true"/>
+
+	<xs:complexType name="CI_Party_PropertyType">
+		<xs:sequence minOccurs="0">
+			<xs:element ref="mcp:AbstractCI_Party"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="gco:ObjectReference"/>
+		<xs:attribute ref="gco:nilReason"/>
+	</xs:complexType>
+
+<!-- ====================================================================== -->
+
+	<xs:complexType name="CI_Organisation_PropertyType">
+		<xs:sequence minOccurs="0">
+			<xs:element ref="mcp:CI_Organisation"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="gco:ObjectReference"/>
+		<xs:attribute ref="gco:nilReason"/>
+	</xs:complexType>
+
+	<xs:element name="CI_Organisation" type="mcp:CI_Organisation_Type" substitutionGroup="mcp:AbstractCI_Party"/>
+
+	<xs:complexType name="CI_Organisation_Type">
+		<xs:annotation>
+			<xs:documentation>Identification of, and means of communication with organisations associated with the resource or metadata</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="mcp:AbstractCI_Party_Type">
+				<xs:sequence>
+					<xs:element name="individual" type="mcp:CI_Individual_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+<!-- ====================================================================== -->
+
+	<xs:complexType name="CI_Individual_PropertyType">
+		<xs:sequence minOccurs="0">
+			<xs:element ref="mcp:CI_Individual"/>
+		</xs:sequence>
+		<xs:attributeGroup ref="gco:ObjectReference"/>
+		<xs:attribute ref="gco:nilReason"/>
+	</xs:complexType>
+
+	<xs:element name="CI_Individual" type="mcp:CI_Individual_Type" substitutionGroup="mcp:AbstractCI_Party"/>
+
+	<xs:complexType name="CI_Individual_Type">
+		<xs:annotation>
+			<xs:documentation>Identification of, and means of communication with individuals associated with the resource or metadata</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="mcp:AbstractCI_Party_Type">
+				<xs:sequence>
+					<xs:element name="positionName" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
 
 <!-- ====================================================================== -->
@@ -149,6 +261,7 @@ Version 2.0 changes: mcp:taxonomicCoverage and mcp:dataParameter mods
 					<xs:element name="samplingFrequency" type="gmd:MD_MaintenanceFrequencyCode_PropertyType" minOccurs="0"/>
 					<xs:element name="dataParameters" type="mcp:DP_DataParameters_PropertyType" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="taxonomicCoverage" type="mcp:TC_Taxon_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="resourceContactInfo" type="mcp:CI_Responsibility_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute ref="gco:isoType" use="required" fixed="gmd:MD_DataIdentification"/>
 			</xs:extension>
@@ -376,6 +489,7 @@ Extends the metadata element to include revisionDate
 			<xs:extension base="gmd:MD_Metadata_Type">
 				<xs:sequence>
 					<xs:element name="revisionDate" type="gco:Date_PropertyType" minOccurs="0"/>
+					<xs:element name="metadataContactInfo" type="mcp:CI_Responsibility_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute ref="gco:isoType" use="required" fixed="gmd:MD_Metadata"/>
 			</xs:extension>

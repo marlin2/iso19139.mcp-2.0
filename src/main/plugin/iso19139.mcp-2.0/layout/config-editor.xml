@@ -218,7 +218,7 @@
   <views>
     <view name="default">
 			<tab id="resourceCitation" default="true" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:alternateTitle" or="alternateTitle" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:credit" or="credit" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
@@ -226,7 +226,7 @@
 			</tab>
 
       <tab id="resourceDescription" mode="flat">
-        <section name=" ">
+        <section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:abstract"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:purpose"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:status"/>
@@ -238,7 +238,7 @@
 			</tab>
 
 			<tab id="resourceKeywords" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:topicCategory" or="topicCategory" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:descriptiveKeywords" or="descriptiveKeywords" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 				</section>
@@ -246,7 +246,7 @@
 
 
 			<tab id="contacts" mode="flat">
-				<section name=" ">
+				<!-- <section name="contacts"> -->
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:pointOfContact" notDisplayedIfMissing="true"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:resourceContactInfo" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 					<!-- always display an add action that will add a new 
@@ -286,18 +286,21 @@
             </template>
           </action>
 					      -->
+<!--
 				</section>
+-->
+
 			</tab>
 
 			<tab id="resourceExtents" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:samplingFrequency"/>
 				</section>
 			</tab>
 
 			<tab id="resourceSpatial" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:spatialRepresentationType"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:spatialResolution"/>
 					<field xpath="/mcp:MD_Metadata/gmd:referenceSystemInfo" or="referenceSystemInfo" in="/mcp:MD_Metadata"/>
@@ -305,14 +308,14 @@
 			</tab>
 
 			<tab id="constraints" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceConstraints" or="resourceConstraints" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 				</section>
 			</tab>
 				
 				<!--
 			<tab id="dataParameters" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:dataParameters" or="dataParameters" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 				</section>
 			</tab>
@@ -350,7 +353,7 @@
 			</tab>
 			
 			<tab id="dataQualityInfo" mode="flat">
-        <section name=" ">
+        <section>
 
 					<!-- DQ_CompletenessOmission -->
           <field name="completenessOmission" templateModeOnly="true" isMissingLabel="notEvaluated" xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report[gmd:DQ_CompletenessOmission]" del=".">
@@ -603,7 +606,7 @@
 			</tab>
 
 			<tab id="distribution" mode="flat">
-				<section name=" ">
+				<section>
           <field xpath="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:distributionFormat" in="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution"/>
 					<action type="add" if="count(mcp:MD_Metadata/gmd:distributionInfo)>0" name="distributionFormat" or="distributionFormat" in="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution">
 						<template>
@@ -622,7 +625,7 @@
 						</template>
 					</action>
 				</section>
-				<section name=" ">
+				<section>
 					<text ref="useAssociatedResources"/>
           <field xpath="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine[gmd:CI_OnlineResource/gmd:protocol/gco:CharacterString!='WWW:LINK-1.0-http--metadata-URL']" in="/mcp:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions"/>
 				</section>
