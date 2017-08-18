@@ -12,21 +12,34 @@
 		<suggest name="gmx:Anchor"/>
 	</field> 
 
+	<field name="gmd:hierarchyLevel">
+    <suggest name="gmd:MD_ScopeCode"/>
+  </field>
+
+	<field name="gmx:Anchor">
+		<suggest name="xlink:href"/>
+	</field>
+
+	<field name="gmd:alternateTitle">
+    <suggest name="gco:CharacterString"/>
+  </field>
+
+  <field name="gmd:credit">
+    <suggest name="gco:CharacterString"/>
+  </field>
+
+  <field name="gmd:supplementalInformation">
+    <suggest name="gco:CharacterString"/>
+  </field>
+
+  <field name="gmd:hierarchyLevelName">
+    <suggest name="gco:CharacterString"/>
+  </field>
+
 	<field name="gmd:code">
 		<suggest name="gco:CharacterString"/>
 		<suggest name="gmx:FileName"/>
 		<suggest name="gmx:Anchor"/>
-	</field>
-
-	<!--
-	<field name="gmd:keyword">
-		<suggest name="gco:CharacterString"/>
-		<suggest name="gmx:Anchor"/>
-	</field>
-	-->
-
-	<field name="gmx:Anchor">
-		<suggest name="xlink:href"/>
 	</field>
 
 	<field name="gmd:language">

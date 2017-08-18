@@ -27,6 +27,7 @@
   <xsl:template name="dispatch-iso19139.mcp-2.0">
     <xsl:param name="base" as="node()"/>
     <xsl:param name="overrideLabel" as="xs:string" required="no" select="''"/>
+    <xsl:param name="refToDelete" as="node()?" required="no"/>
 
 		<!-- process in iso19139 mode - but we can override any templates
 		     defined for iso19139 by importing that stylesheet into our
@@ -36,6 +37,7 @@
      	<xsl:with-param name="overrideLabel" select="$overrideLabel"/>
     	<xsl:with-param name="schema" select="$schema"/>
     	<xsl:with-param name="labels" select="$iso19139.mcp-2.0labels"/>
+			<xsl:with-param name="refToDelete" select="$refToDelete"/>
     </xsl:apply-templates>
 
   </xsl:template>
@@ -55,8 +57,15 @@
    <!-- <xsl:message>in xml <xsl:copy-of select="$base"></xsl:copy-of></xsl:message>
     <xsl:message>search for <xsl:copy-of select="$in"></xsl:copy-of></xsl:message>-->
     <xsl:variable name="nodeOrAttribute" select="saxon:evaluate(concat('$p1', $in), $base)"/>
+
     <xsl:choose>
-      <xsl:when test="$nodeOrAttribute/*">
+      <xsl:when test="$nodeOrAttribute instance of text()+">
+        <xsl:copy-of select="$nodeOrAttribute"/>
+      </xsl:when>
+      <xsl:when test="$nodeOrAttribute instance of element()+">
+        <xsl:copy-of select="$nodeOrAttribute"/>
+      </xsl:when>
+      <xsl:when test="$nodeOrAttribute instance of attribute()+">
         <xsl:copy-of select="$nodeOrAttribute"/>
       </xsl:when>
       <xsl:otherwise>

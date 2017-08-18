@@ -59,7 +59,11 @@
       <directiveAttributes
             data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
-            data-template-type="party"/>
+            data-search-action="true"
+						data-popup-action="true"
+            data-template-type="party"
+						data-filter='{"_root": "mcp:CI_Organisation"}'
+						data-insert-modes="xlink"/>
     </for>
     
     <for name="gmd:contact" addDirective="data-gn-directory-entry-selector">
@@ -72,37 +76,53 @@
 
     <for name="gmd:pointOfContact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp-2.0"
-            data-template-add-action="true"
-            data-template-type="contact"
+						data-template-add-action="true"
+        		data-search-action="true"
+        		data-popup-action="true"
+        		data-template-type="contact"
+        		data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:distributorContact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp-2.0"
-            data-template-add-action="true"
+						data-template-add-action="true"
+            data-search-action="true"
+            data-popup-action="true"
             data-template-type="contact"
+            data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:processor" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp-2.0"
-            data-template-add-action="true"
-            data-template-type="contact"
+						data-template-add-action="true"
+        		data-search-action="true"
+        		data-popup-action="true"
+        		data-template-type="contact"
+        		data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:citedResponsibleParty" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-schema="iso19139.mcp-2.0"
-            data-template-add-action="false"
-            data-template-type="contact"
+						data-template-add-action="true"
+        		data-search-action="true"
+        		data-popup-action="true"
+        		data-template-type="contact"
+        		data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
-    <for name="gmd:descriptiveKeywords" addDirective="data-gn-thesaurus-selector"/>
+    <for name="gmd:descriptiveKeywords" addDirective="data-gn-thesaurus-selector">
+			<!--
+				Exclude all thesaurus already used in the metadata:
+      -->
+      <directiveAttributes data-include="xpath::string-join(gmd:MD_Metadata/gmd:identificationInfo
+                                        //gmd:thesaurusName/*/gmd:identifier/*/
+                                        gmd:code/gmx:Anchor/
+                                        concat('-', substring-after(text()[. != ''], 'geonetwork.thesaurus.')), ',')"/>
+    </for>
     <for name="mcp:MD_Commons" addDirective="data-gn-commons-jurisdiction-selector"/>
   </fields>
 
