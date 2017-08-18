@@ -28,10 +28,6 @@
 
   </xsl:template>
 
-	<!-- Readonly element -->
-  <xsl:template mode="mode-iso19139" priority="33000" match="mcp:metadataContact">
-  </xsl:template>
-	
   <!-- Custom rendering of resource constraints section 
     * gmd:resourceConstraints is boxed element and the title 
     * of the fieldset is the creative commons license name
