@@ -118,10 +118,7 @@
 			<!--
 				Exclude all thesaurus already used in the metadata:
       -->
-      <directiveAttributes data-include="xpath::string-join(gmd:MD_Metadata/gmd:identificationInfo
-                                        //gmd:thesaurusName/*/gmd:identifier/*/
-                                        gmd:code/gmx:Anchor/
-                                        concat('-', substring-after(text()[. != ''], 'geonetwork.thesaurus.')), ',')"/>
+      <directiveAttributes data-include="xpath::string-join(mcp:MD_Metadata/gmd:identificationInfo//gmd:thesaurusName/*/gmd:identifier/*/gmd:code/gmx:Anchor/concat('-', substring-after(text()[. != ''], 'geonetwork.thesaurus.')), ',')"/>
     </for>
     <for name="mcp:MD_Commons" addDirective="data-gn-commons-jurisdiction-selector"/>
   </fields>
