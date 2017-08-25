@@ -41,7 +41,7 @@
         <xsl:variable name="org" select="normalize-space(mcp:name/gco:CharacterString)"/>
         <xsl:variable name="name" select="normalize-space(mcp:individual/mcp:CI_Individual/mcp:name/gco:CharacterString)"/>
 
-        <Field name="_title" string="{if ($name != '') then concat($org, ' (', $name, ')') else $org}"
+        <Field name="_title" string="{if ($title != '') then $title else if ($name != '') then concat($org, ' (', $name, ')') else $org}"
                        store="true" index="true"/>
         <Field name="orgName" string="{$org}" store="true" index="true"/>
         <Field name="orgNameTree" string="{$org}" store="true" index="true"/>
