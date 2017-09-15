@@ -120,6 +120,7 @@
       -->
       <directiveAttributes data-include="xpath::string-join(mcp:MD_Metadata/gmd:identificationInfo//gmd:thesaurusName/*/gmd:identifier/*/gmd:code/gmx:Anchor/concat('-', substring-after(text()[. != ''], 'geonetwork.thesaurus.')), ',')"/>
     </for>
+
     <for name="mcp:MD_Commons" addDirective="data-gn-commons-jurisdiction-selector"/>
   </fields>
 
@@ -712,6 +713,19 @@ if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:e
 				<for name="mcp:party"/>
 				<for name="mcp:MD_Commons"/>
       </flatModeExceptions>
+			<!-- Thesauri -->
+			<thesaurusList>
+				<thesaurus key="external.theme.gcmd_keywords" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.discipline.urn:marlin.csiro.au:keywords:cmarAOI" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.project.urn:marlin.csiro.au:globalprojectregister" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.project.urn:marlin.csiro.au:projectregister" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.dataSource.urn:marlin.csiro.au:sourceregister" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.survey.urn:marlin.csiro.au:surveyregister" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.discipline.urn:marlin.csiro.au:keywords:standardDataType" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.equipment.urn:marlin.csiro.au:Equipment" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.place.urn:aodn.org.au:geographicextents" transformations="to-iso19139-keyword-with-anchor"/>
+				<thesaurus key="register.taxon.urn:lsid:marinespecies.org:taxname" transformations="to-iso19139-keyword-with-anchor"/>
+			</thesaurusList>
     </view>
 
     <view name="advanced">

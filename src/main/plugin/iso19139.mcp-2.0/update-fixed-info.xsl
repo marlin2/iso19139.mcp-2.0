@@ -252,17 +252,17 @@
       <!-- if we have an equipment thesaurus with a match keyword then we process -->
 
       <xsl:variable name="equipPresent">
-       <xsl:for-each select="gmd:descriptiveKeywords/gmd:MD_Keywords[gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier/gmd:code/gmx:Anchor=$equipThesaurus]/gmd:keyword/gmx:Anchor">
+       <xsl:for-each select="//gmd:descriptiveKeywords/gmd:MD_Keywords[normalize-space(gmd:thesaurusName/gmd:CI_Citation/gmd:identifier/gmd:MD_Identifier/gmd:code/gmx:Anchor)=$equipThesaurus]/gmd:keyword/gmx:Anchor">
         <xsl:element name="dp">
           <mcp:dataParameters>
            <mcp:DP_DataParameters>
            <xsl:variable name="currentKeyword" select="text()"/>
-           <!-- <xsl:comment>Automatically created dp from <xsl:value-of select="$currentKeyword"/></xsl:comment> -->
+           <!-- <xsl:message>Automatically created dp from <xsl:value-of select="$currentKeyword"/></xsl:message> -->
            <xsl:for-each select="$mapping/map/equipment">
               <xsl:variable name="tokens" select="tokenize(string(),',')"/>
               <!-- <xsl:message>Checking <xsl:value-of select="$tokens[2]"/></xsl:message> -->
               <xsl:if test="$currentKeyword=$tokens[2]">
-                 <xsl:message>KW MATCHED TOKEN: <xsl:value-of select="$tokens[2]"/></xsl:message>
+                 <!-- <xsl:message>KW MATCHED TOKEN: <xsl:value-of select="$tokens[2]"/></xsl:message> -->
                  <xsl:call-template name="fillOutDataParameters">
  										<xsl:with-param name="tokens" select="$tokens"/> 
                  </xsl:call-template>
