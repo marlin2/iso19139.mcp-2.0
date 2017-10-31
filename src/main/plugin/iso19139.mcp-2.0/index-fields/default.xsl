@@ -17,6 +17,50 @@
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
 
+  <xsl:template mode="index" match="mcp:MD_DataIdentification/gmd:citation/mcp:CI_Citation">
+
+    <xsl:for-each select="gmd:identifier/gmd:MD_Identifier/gmd:code/gco:CharacterString">
+      <Field name="identifier" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:title/gco:CharacterString">
+      <Field name="title" string="{string(.)}" store="true" index="true"/>
+      <!-- not tokenized title for sorting -->
+      <Field name="_title" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:alternateTitle/gco:CharacterString">
+      <Field name="altTitle" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:date/gmd:CI_Date[gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='revision']/gmd:date/gco:Date|gmd:date/gmd:CI_Date[gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='revision']/gmd:date/gco:DateTime">
+      <Field name="revisionDate" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:date/gmd:CI_Date[gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='creation']/gmd:date/gco:Date|gmd:date/gmd:CI_Date[gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='creation']/gmd:date/gco:DateTime">
+      <Field name="createDate" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:date/gmd:CI_Date[gmd:dateType/gmd:CI_DateTypeCode/@codeListValue='publication']/gmd:date/gco:Date">
+      <Field name="publicationDate" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="mcp:responsibleParty/mcp:CI_Responsibility/mcp:party/mcp:CI_Organisation/mcp:name/gco:CharacterString">
+      <xsl:variable name="org" select="string(.)"/>
+
+      <Field name="orgName" string="{$org}" store="true" index="true"/>
+
+      <xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
+      <xsl:for-each select="../../../../mcp:role/*/@codeListValue">
+        <Field name="responsibleParty" string="{concat(., '|resource|', $org, '|', $logo)}" store="true" index="false"/>
+      </xsl:for-each>
+    </xsl:for-each>
+
+    <xsl:apply-templates mode="index" select="*"/>
+  </xsl:template>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
+
 	<xsl:template mode="index" match="mcp:dataParameters/mcp:DP_DataParameters/mcp:dataParameter">
 		<xsl:for-each select="mcp:DP_DataParameter/mcp:parameterName/mcp:DP_Term">
 			<xsl:variable name="term" select="mcp:term/*"/>
@@ -74,6 +118,27 @@
 					<Field name="{$thesaurusId}" string="{replace($keywordId,'%23','#')}" store="true" index="true"/>
 				</xsl:if>
 			</xsl:if>
+
+      <xsl:choose>
+            <xsl:when test="contains($thesaurusId,'sourceregister')">
+              <Field name="source" string="{string(.)}" store="true" index="true"/>
+            </xsl:when>
+            <xsl:when test="contains($thesaurusId,'surveyregister')">
+              <Field name="survey" string="{string(.)}" store="true" index="true"/>
+            </xsl:when>
+            <xsl:when test="contains($thesaurusId,'projectregister')">
+              <Field name="project" string="{string(.)}" store="true" index="true"/>
+            </xsl:when>
+            <xsl:when test="contains($thesaurusId,'gcmd_keywords')">
+              <Field name="gcmd" string="{string(.)}" store="true" index="true"/>
+            </xsl:when>
+            <xsl:when test="contains($thesaurusId,'awavea-keywords')">
+              <Field name="awavea" string="{string(.)}" store="true" index="true"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <Field name="otherkeyword" string="{string(.)}" store="true" index="true"/>
+            </xsl:otherwise>
+      </xsl:choose>
 		</xsl:for-each>
 
 		<xsl:apply-templates mode="index" select="*"/>
