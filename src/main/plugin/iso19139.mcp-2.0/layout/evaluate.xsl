@@ -12,37 +12,6 @@
   xmlns:saxon="http://saxon.sf.net/" extension-element-prefixes="saxon"
   exclude-result-prefixes="#all">
   
-  <xsl:include href="layout.xsl"/>
-  <xsl:include href="evaluate.xsl"/>
-  
-  
-  <!-- 
-    Load the schema configuration for the editor.
-      -->
-  <xsl:template name="get-iso19139.mcp-2.0-configuration">
-    <xsl:copy-of select="document('config-editor.xml')"/>
-  </xsl:template>
-
-
-	<!-- The main dispatch point -->
-  <xsl:template name="dispatch-iso19139.mcp-2.0">
-    <xsl:param name="base" as="node()"/>
-    <xsl:param name="overrideLabel" as="xs:string" required="no" select="''"/>
-    <xsl:param name="refToDelete" as="node()?" required="no"/>
-
-		<!-- process in iso19139 mode - but we can override any templates
-		     defined for iso19139 by importing that stylesheet into our
-				 mcp-2.0 stylesheet - that way the iso19139 templates will have
-				 a lower priority than ours -->
-    <xsl:apply-templates mode="mode-iso19139" select="$base">
-     	<xsl:with-param name="overrideLabel" select="$overrideLabel"/>
-    	<xsl:with-param name="schema" select="$schema"/>
-    	<xsl:with-param name="labels" select="$iso19139.mcp-2.0labels"/>
-			<xsl:with-param name="refToDelete" select="$refToDelete"/>
-    </xsl:apply-templates>
-
-  </xsl:template>
-
   <!-- Evaluate an expression. This is schema dependant in order to properly 
         set namespaces required for evaluate.
         
