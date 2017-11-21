@@ -3,8 +3,6 @@
   xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco"
   xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="#all">
 
-  <xsl:include href="../../iso19139/layout/utility-tpl-multilingual.xsl"/>
-
   <!-- Get the main metadata languages -->
   <xsl:template name="get-iso19139.mcp-2.0-language">
     <xsl:call-template name="get-iso19139-language"/>
