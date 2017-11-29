@@ -37,7 +37,7 @@
                 version="2.0"
                 extension-element-prefixes="saxon"
                 exclude-result-prefixes="#all">
-  <!-- This formatter render an ISO19139 record based on the
+  <!-- This formatter render an ISO19139.mcp-2.0 record based on the
   editor configuration file.
 
 
@@ -61,7 +61,7 @@
 
   <!-- Some utility -->
   <xsl:include href="../../layout/evaluate.xsl"/>
-  <xsl:include href="../../layout/utility-tpl-multilingual.xsl"/>
+  <xsl:include href="../../../iso19139/layout/utility-tpl.xsl"/>
   <xsl:include href="../../../iso19139/layout/utility-fn.xsl"/>
 
   <!-- The core formatter XSL layout based on the editor configuration -->
@@ -75,7 +75,7 @@
   <xsl:variable name="langId" select="gn-fn-iso19139:getLangId($metadata, $language)"/>
 
   <!-- Specific schema rendering -->
-  <xsl:template mode="getMetadataTitle" match="gmd:MD_Metadata">
+  <xsl:template mode="getMetadataTitle" match="mcp:MD_Metadata">
     <xsl:for-each select="gmd:identificationInfo/*/gmd:citation/*/gmd:title">
       <xsl:call-template name="localised">
         <xsl:with-param name="langId" select="$langId"/>
