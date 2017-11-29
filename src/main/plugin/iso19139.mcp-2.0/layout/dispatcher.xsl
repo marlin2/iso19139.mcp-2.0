@@ -43,45 +43,4 @@
 
   </xsl:template>
 
-  <!-- Evaluate an expression. This is schema dependant in order to properly 
-        set namespaces required for evaluate.
-        
-    "The static context for the expression includes all the in-scope namespaces, 
-    types, and functions from the calling stylesheet or query"
-    http://saxonica.com/documentation9.4-demo/html/extensions/functions/evaluate.html
-    
-       A node returned by evaluate will lost its context (ancestors).
-    -->
-  <xsl:template name="evaluate-iso19139.mcp-2.0">
-    <xsl:param name="base" as="node()"/>
-    <xsl:param name="in"/>
-   <!-- <xsl:message>in xml <xsl:copy-of select="$base"></xsl:copy-of></xsl:message>
-    <xsl:message>search for <xsl:copy-of select="$in"></xsl:copy-of></xsl:message>-->
-    <xsl:variable name="nodeOrAttribute" select="saxon:evaluate(concat('$p1', $in), $base)"/>
-
-    <xsl:choose>
-      <xsl:when test="$nodeOrAttribute instance of text()+">
-        <xsl:copy-of select="$nodeOrAttribute"/>
-      </xsl:when>
-      <xsl:when test="$nodeOrAttribute instance of element()+">
-        <xsl:copy-of select="$nodeOrAttribute"/>
-      </xsl:when>
-      <xsl:when test="$nodeOrAttribute instance of attribute()+">
-        <xsl:copy-of select="$nodeOrAttribute"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$nodeOrAttribute"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <!-- Evaluate XPath returning a boolean value. -->
-  <xsl:template name="evaluate-iso19139.mcp-2.0-boolean">
-    <xsl:param name="base" as="node()"/>
-    <xsl:param name="in"/>
-   
-    <xsl:value-of select="saxon:evaluate(concat('$p1', $in), $base)"/>
-  </xsl:template>
-
-
 </xsl:stylesheet>
