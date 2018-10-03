@@ -70,6 +70,8 @@
       <directiveAttributes
 						data-schema="iso19139.mcp-2.0"
             data-template-add-action="true"
+            data-search-action="true"
+						data-popup-action="true"
             data-template-type="contact"
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
@@ -159,6 +161,12 @@
     <name>gmd:aggregationInfo</name>
     <name>gmd:processStep</name>
     <name>gmd:lineage</name>
+    <name>gmd:centerPoint</name>
+    <name>gml:verticalCS</name>
+    <name>gml:verticalDatum</name>
+    <name>gmd:axisDimensionProperties</name>
+    <name>gmd:identifier</name>
+    <name>gmd:topicCategory</name>
 		<name>mcp:dataParameters</name>
 		<name>mcp:resourceContactInfo</name>
 		<name>mcp:metadataContactInfo</name>
@@ -228,6 +236,10 @@
       <name>srv:serviceTypeVersion</name>
       <name>srv:operationName</name>
       <name>srv:identifier</name>
+      <name>srv:serviceType</name>
+      <name ancestor="gmd:thesaurusName">gmd:code</name>
+      <name ancestor="gmd:aggregateDataSetIdentifier">gmd:code</name>
+      <name ancestor="gmd:CI_Citation">gmd:code</name>
     </exclude>
   </multilingualFields>
 
@@ -235,6 +247,16 @@
   <!-- View configuration -->
   <views>
     <view name="default">
+      <sidePanel>
+        <directive data-gn-onlinesrc-list=""/>
+        <directive gn-geo-publisher=""
+                   data-ng-if="gnCurrentEdit.geoPublisherConfig"
+                   data-config="{{gnCurrentEdit.geoPublisherConfig}}"
+                   data-lang="lang"/>
+        <!-- <directive data-gn-validation-report=""/> -->
+        <directive data-gn-suggestion-list=""/>
+        <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/>
+      </sidePanel>
 			<tab id="resourceCitation" default="true" mode="flat">
 				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:citation/gmd:CI_Citation/gmd:title"/>
@@ -729,6 +751,16 @@ if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:e
     </view>
 
     <view name="advanced">
+      <sidePanel>
+        <directive data-gn-onlinesrc-list=""/>
+        <directive gn-geo-publisher=""
+                   data-ng-if="gnCurrentEdit.geoPublisherConfig"
+                   data-config="{{gnCurrentEdit.geoPublisherConfig}}"
+                   data-lang="lang"/>
+        <!-- <directive data-gn-validation-report=""/> -->
+        <directive data-gn-suggestion-list=""/>
+        <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/>
+      </sidePanel>
       <tab id="All" default="true">
         <section xpath="/mcp:MD_Metadata/gmd:identificationInfo" or="identificationInfo"
                  in="/mcp:MD_Metadata">
@@ -805,6 +837,16 @@ if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:e
       </tab>
     </view>
     <view name="xml">
+      <sidePanel>
+        <directive data-gn-onlinesrc-list=""/>
+        <directive gn-geo-publisher=""
+                   data-ng-if="gnCurrentEdit.geoPublisherConfig"
+                   data-config="{{gnCurrentEdit.geoPublisherConfig}}"
+                   data-lang="lang"/>
+        <!-- <directive data-gn-validation-report=""/> -->
+        <directive data-gn-suggestion-list=""/>
+        <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/>
+      </sidePanel>
       <tab id="xml" default="true"/>
     </view>
   </views>
