@@ -26,6 +26,23 @@
   <gmd:metadataStandardVersion>
     <gco:CharacterString>2.0</gco:CharacterString>
   </gmd:metadataStandardVersion>
+  <gmd:referenceSystemInfo>
+      <gmd:MD_ReferenceSystem>
+         <gmd:referenceSystemIdentifier>
+            <gmd:RS_Identifier>
+               <gmd:code>
+                  <gco:CharacterString>WGS 84 (EPSG:4326)</gco:CharacterString>
+               </gmd:code>
+               <gmd:codeSpace>
+                  <gco:CharacterString>EPSG</gco:CharacterString>
+               </gmd:codeSpace>
+               <gmd:version>
+                  <gco:CharacterString>8.6</gco:CharacterString>
+               </gmd:version>
+            </gmd:RS_Identifier>
+         </gmd:referenceSystemIdentifier>
+      </gmd:MD_ReferenceSystem>
+  </gmd:referenceSystemInfo>
   <gmd:identificationInfo>
     <mcp:MD_DataIdentification gco:isoType="gmd:MD_DataIdentification">
       <gmd:citation>
@@ -43,6 +60,23 @@
       <gmd:status>
         <gmd:MD_ProgressCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue=""/>
       </gmd:status>
+        <gmd:resourceConstraints>
+            <gmd:MD_LegalConstraints>
+               <gmd:useLimitation>
+                  <gco:CharacterString>This licence allows user to use the data for non-commercial purposes with appropriate attribution. The rights granted under this licence are personal to the user and not capable of assignment. Data cannot be distributed nor have any intellectual property rights asserted over the data. CSIRO must not be represented as being responsible for the accuracy, correctness of the data or for any output of any application of the data. Nor does CSIRO support or endorse use of the data or any products derived or conclusions or predictions drawn from this data.
+
+https://wiki.csiro.au/display/dmsdoc/CSIRO+Data+Licence</gco:CharacterString>
+               </gmd:useLimitation>
+               <gmd:accessConstraints>
+                  <gmd:MD_RestrictionCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+                                          codeListValue="restricted">restricted</gmd:MD_RestrictionCode>
+               </gmd:accessConstraints>
+               <gmd:useConstraints>
+                  <gmd:MD_RestrictionCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+                                          codeListValue="restricted">restricted</gmd:MD_RestrictionCode>
+               </gmd:useConstraints>
+            </gmd:MD_LegalConstraints>
+         </gmd:resourceConstraints>
       <gmd:spatialRepresentationType>
         <gmd:MD_SpatialRepresentationTypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue=""/>
       </gmd:spatialRepresentationType>
@@ -50,7 +84,7 @@
         <gmd:MD_Resolution>
           <gmd:equivalentScale>
             <gmd:MD_RepresentativeFraction>
-              <gmd:denominator>
+              <gmd:denominator gco:nilReason="missing">
                 <gco:Integer/>
               </gmd:denominator>
             </gmd:MD_RepresentativeFraction>
