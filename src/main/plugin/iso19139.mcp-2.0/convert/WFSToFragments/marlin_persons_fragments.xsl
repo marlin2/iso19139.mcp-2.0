@@ -97,15 +97,15 @@
 					<!-- gmd:name organisation_name -->
 					<xsl:choose>
 						<xsl:when test="app:organisation_id!='-1'">
-					<mcp:name xlink:href="local://srv/api/records/urn:marlin.csiro.au:org:{app:organisation_id}_organisation_name"/>
+					<mcp:name xlink:href="local://xml.metadata.get?uuid=urn:marlin.csiro.au:org:{app:organisation_id}_organisation_name"/>
 					<!-- gmd:contactInfo organisation_contact_info_mailing_address -->
 					<xsl:if test="$org/app:MarlinOrganisations/app:mail_address_1">
-						<mcp:contactInfo xlink:href="local://srv/api/records/urn:marlin.csiro.au:org:{app:organisation_id}_contact_info_mailing_address"/>
+						<mcp:contactInfo xlink:href="local://xml.metadata.get?uuid=urn:marlin.csiro.au:org:{app:organisation_id}_contact_info_mailing_address"/>
 					</xsl:if>
 
 					<!-- gmd:contactInfo organisation_contact_info_street_address -->
 					<xsl:if test="$org/app:MarlinOrganisations/app:street_address_1">
-						<mcp:contactInfo xlink:href="local://srv/api/records/urn:marlin.csiro.au:org:{app:organisation_id}_contact_info_street_address"/>
+						<mcp:contactInfo xlink:href="local://xml.metadata.get?uuid=urn:marlin.csiro.au:org:{app:organisation_id}_contact_info_street_address"/>
 					</xsl:if>
 
 						</xsl:when>

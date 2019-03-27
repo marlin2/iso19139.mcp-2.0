@@ -13,9 +13,16 @@
 
 
 	<xsl:import href="../../iso19139/index-fields/default.xsl"/>
+
 	<xsl:include href="../../iso19139/convert/functions.xsl"/>
 
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -     
+       This template matches 
+       mcp:MD_DataIdentification/gmd:citation/mcp:CI_Citation - 
+       gmd:CI_Citation is handled in ../iso19139/index-fields.xsl. 
+       Note: we don't match any other mcp:CI_Citation blocks as this 
+       template extracts the citation details of the resource.
+       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <xsl:template mode="index" match="mcp:MD_DataIdentification/gmd:citation/mcp:CI_Citation">
 
@@ -59,6 +66,15 @@
     <xsl:apply-templates mode="index" select="*"/>
   </xsl:template>
 
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -     
+       If an online resource contains a protocol field with csiro in it 
+       then make sure that this record has download indexed so that 
+       quick search on data attached can be used
+       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <xsl:template mode="index" match="gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[gmd:linkage/gmd:URL!='' and (contains(gmd:protocol/*,'http--csiro-oa-app') or contains(gmd:protocol/*,'download'))]">
+    <Field name="download" string="on" store="false" index="true"/>
+  </xsl:template>
+
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
 
 	<xsl:template mode="index" match="mcp:dataParameters/mcp:DP_DataParameters/mcp:dataParameter">
@@ -78,6 +94,81 @@
 	</xsl:template>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
+
+  <xsl:template mode="index" match="mcp:EX_Extent">
+
+    <xsl:apply-templates select="gmd:geographicElement/gmd:EX_GeographicBoundingBox" mode="latLon"/>
+
+    <xsl:for-each select="gmd:geographicElement/gmd:EX_GeographicDescription/gmd:geographicIdentifier/gmd:MD_Identifier/gmd:code/gco:CharacterString">
+      <Field name="geoDescCode" string="{string(.)}" store="true" index="true"/>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:geographicElement/gmd:EX_GeographicDescription/gmd:geographicIdentifier/gmd:RS_Identifier">
+      <xsl:if test="gmd:authority/*/gmd:title/gco:CharacterString='c-squares'">
+        <xsl:for-each select="tokenize(gmd:code/gco:CharacterString,'\|')">
+          <Field name="csquare" string="{string(.)}" store="false" index="true"/>
+        </xsl:for-each>
+      </xsl:if>
+    </xsl:for-each>
+
+    <xsl:for-each select="gmd:temporalElement/mcp:EX_TemporalExtent/gmd:extent|gmd:temporalElement/gmd:EX_TemporalExtent/gmd:extent">
+      <xsl:for-each select="gml:TimePeriod">
+        <xsl:variable name="times">
+          <xsl:call-template name="newGmlTime">
+            <xsl:with-param name="begin" select="gml:beginPosition|gml:begin/gml:TimeInstant/gml:timePosition"/>
+            <xsl:with-param name="end" select="gml:endPosition|gml:end/gml:TimeInstant/gml:timePosition"/>
+          </xsl:call-template>
+        </xsl:variable>
+
+        <Field name="tempExtentBegin" string="{lower-case(substring-before($times,'|'))}" store="true" index="true"/>
+        <Field name="tempExtentEnd" string="{lower-case(substring-after($times,'|'))}" store="true" index="true"/>
+      </xsl:for-each>
+    </xsl:for-each>
+
+    <xsl:apply-templates mode="index" select="*"/>
+  </xsl:template>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <xsl:template mode="index" match="mcp:resourceContactInfo[1]/mcp:CI_Responsibility/mcp:role/*/@codeListValue">
+
+    <Field name="responsiblePartyRole" string="{string(.)}" store="false" index="true"/>
+
+  </xsl:template>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <xsl:template mode="index" match="mcp:resourceContactInfo/mcp:CI_Responsibility//mcp:party/mcp:CI_Organisation/mcp:name[not(@gco:nilReason)]/gco:CharacterString">
+
+    <xsl:variable name="org" select="string(.)"/>
+
+    <Field name="orgName" string="{$org}" store="true" index="true"/>
+
+    <xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
+    <xsl:for-each select="../../../../mcp:role/*/@codeListValue">
+      <Field name="responsibleParty" string="{concat(., '|resource|', $org, '|', $logo)}" store="true" index="false"/>
+    </xsl:for-each>
+
+    <xsl:apply-templates mode="index" select="*"/>
+  </xsl:template>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <xsl:template mode="index" match="mcp:metadataContactInfo/mcp:CI_Responsibility//mcp:party/mcp:CI_Organisation/mcp:name[not(@gco:nilReason)]/gco:CharacterString">
+
+    <xsl:variable name="org" select="."/>
+
+    <Field name="metadataPOC" string="{$org}" store="true" index="true"/>
+
+    <xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
+    <xsl:for-each select="../../../../mcp:role/*/@codeListValue">
+      <Field name="responsibleParty" string="{concat(., '|metadata|', $org, '|', $logo)}" store="true" index="false"/>
+    </xsl:for-each>
+
+    <xsl:apply-templates mode="index" select="*"/>
+  </xsl:template>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 	<xsl:template mode="index" match="mcp:revisionDate/*">
 
@@ -116,6 +207,7 @@
 	
 				<xsl:if test="normalize-space($keywordId)!=''">
 					<Field name="{$thesaurusId}" string="{replace($keywordId,'%23','#')}" store="true" index="true"/>
+          <Field name="keywordId" string="{replace($keywordId,'%23','#')}" store="true" index="true"/>
 				</xsl:if>
 			</xsl:if>
 
@@ -167,55 +259,5 @@
 		<xsl:apply-templates mode="index" select="*"/>
 	</xsl:template>
 
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -     
-	     If an online resource contains a protocol field with csiro in it 
-	     then make sure that this record has download indexed so that 
-			 quick search on data attached can be used
-	     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-	<xsl:template mode="index" match="gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[gmd:linkage/gmd:URL!='' and contains(gmd:protocol/*,'http--csiro-oa-app')]">
-		<Field name="download" string="on" store="false" index="true"/>
-	</xsl:template>
-
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
-
-	<xsl:template mode="index" match="mcp:resourceContactInfo[1]/mcp:CI_Responsibility/mcp:role/*/@codeListValue">
-
-    <Field name="responsiblePartyRole" string="{string(.)}" store="false" index="true"/>
-
-	</xsl:template>
-
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
-
-	<xsl:template mode="index" match="mcp:resourceContactInfo/mcp:CI_Responsibility//mcp:party/mcp:CI_Organisation/mcp:name[not(@gco:nilReason)]/gco:CharacterString">
-
-		<xsl:variable name="org" select="string(.)"/>
-
-		<Field name="orgName" string="{$org}" store="true" index="true"/>
-
-		<xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
-		<xsl:for-each select="../../../../mcp:role/*/@codeListValue">
-			<Field name="responsibleParty" string="{concat(., '|resource|', $org, '|', $logo)}" store="true" index="false"/>
-		</xsl:for-each>
-
-		<xsl:apply-templates mode="index" select="*"/>
-	</xsl:template>
-
-	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		
-	<xsl:template mode="index" match="mcp:metadataContactInfo/mcp:CI_Responsibility//mcp:party/mcp:CI_Organisation/mcp:name[not(@gco:nilReason)]/gco:CharacterString">
-
-		<xsl:variable name="org" select="."/>
-
-		<Field name="metadataPOC" string="{$org}" store="true" index="true"/>
-
-		<xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
-		<xsl:for-each select="../../../../mcp:role/*/@codeListValue">
-			<Field name="responsibleParty" string="{concat(., '|metadata|', $org, '|', $logo)}" store="true" index="false"/>
-		</xsl:for-each>
-
-		<xsl:apply-templates mode="index" select="*"/>
-	</xsl:template>
-
-	
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
 </xsl:stylesheet>

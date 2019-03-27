@@ -53,7 +53,11 @@
 
     <for name="gmd:country" use="data-gn-country-picker"/>
 
-    <for name="gmd:referenceSystemInfo" addDirective="data-gn-crs-selector"/>
+    <for name="gmd:referenceSystemInfo" addDirective="data-gn-crs-selector">
+      <directiveAttributes
+            data-template-add-action="false"
+      />
+    </for>
 
     <for name="mcp:party" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
@@ -78,51 +82,62 @@
 
     <for name="gmd:pointOfContact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
+            data-schema="iso19139.mcp-2.0"
 						data-template-add-action="true"
         		data-search-action="true"
         		data-popup-action="true"
         		data-template-type="contact"
-        		data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:distributorContact" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
+            data-schema="iso19139.mcp-2.0"
 						data-template-add-action="true"
             data-search-action="true"
             data-popup-action="true"
             data-template-type="contact"
-            data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:processor" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
+            data-schema="iso19139.mcp-2.0"
 						data-template-add-action="true"
         		data-search-action="true"
         		data-popup-action="true"
         		data-template-type="contact"
-        		data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:citedResponsibleParty" addDirective="data-gn-directory-entry-selector">
       <directiveAttributes
-						data-template-add-action="true"
+            data-schema="iso19139.mcp-2.0"
+						data-template-add-action="false"
         		data-search-action="true"
         		data-popup-action="true"
         		data-template-type="contact"
-        		data-insert-modes=""
             data-variables="gmd:role/gmd:CI_RoleCode/@codeListValue~{role}"/>
 		</for>
 
     <for name="gmd:descriptiveKeywords" addDirective="data-gn-thesaurus-selector">
-			<!--
-				Exclude all thesaurus already used in the metadata:
-      -->
-      <directiveAttributes data-include="xpath::string-join(mcp:MD_Metadata/gmd:identificationInfo//gmd:thesaurusName/*/gmd:identifier/*/gmd:code/gmx:Anchor/concat('-', substring-after(text()[. != ''], 'geonetwork.thesaurus.')), ',')"/>
-    </for>
+      <!--
+      Example of configuration to disable free text keywords in the thesaurus selector
+      <directiveAttributes data-allow-free-text-keywords="false" />
 
+      To restrict the list of thesaurus allowed, set the include attribute
+      for the directive:
+      <directiveAttributes data-include="external.theme.httpinspireeceuropaeutheme-theme,external.place.regions"/>
+
+      Exclude a thesaurus:
+      <directiveAttributes data-include="-external.place.regions"/>
+
+      Exclude all thesaurus already used in the metadata:
+      -->
+      <directiveAttributes 
+            data-include="xpath::string-join(mcp:MD_Metadata/gmd:identificationInfo//gmd:thesaurusName/*/gmd:identifier/*/gmd:code/gmx:Anchor/concat('-', substring-after(text()[. != ''], 'geonetwork.thesaurus.')), ',')"
+            data-allow-free-text-keywords="false"/>
+    </for>
     <for name="mcp:MD_Commons" addDirective="data-gn-commons-jurisdiction-selector"/>
   </fields>
 
@@ -254,8 +269,10 @@
                    data-config="{{gnCurrentEdit.geoPublisherConfig}}"
                    data-lang="lang"/>
         <!-- <directive data-gn-validation-report=""/> -->
-        <directive data-gn-suggestion-list=""/>
-        <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/>
+        <!-- <directive data-gn-suggestion-list=""/> -->
+        <!-- relative docUrl in gnGlobalSettings which is set to
+             https://confluence.csiro.au/display/DataCentreShared/ -->
+        <directive data-gn-need-help="MARLIN+Help-+Editing"/>
       </sidePanel>
 			<tab id="resourceCitation" default="true" mode="flat">
 				<section>
@@ -273,7 +290,7 @@
           <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevel" or="hierarchyLevel" in="/mcp:MD_Metadata"/>
           <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevelName" or="hierarchyLevelName" in="/mcp:MD_Metadata"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:supplementalInformation" or="supplementalInformation" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance" or="resourceMaintenance" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 				</section>
 			</tab>
 
@@ -333,74 +350,59 @@
 			<tab id="resourceExtents" mode="flat">
 				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent"/>
-          <action type="add" name="GeographicBoundingBox" or="geographicElement" 
-if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement)=0" 
-  in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent"
-  del="../..">
+          <action type="add" name="extent" or="extent" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
             <template>
               <snippet>
-								<gmd:extent>
-                  <gmd:EX_Extent>
-                    <gmd:geographicElement>
-                      <gmd:EX_GeographicBoundingBox>
-                        <gmd:westBoundLongitude>
-                          <gco:Decimal/>
-                        </gmd:westBoundLongitude>
-                        <gmd:eastBoundLongitude>
-                          <gco:Decimal/>
-                        </gmd:eastBoundLongitude>
-                        <gmd:southBoundLatitude>
-                          <gco:Decimal/>
-                        </gmd:southBoundLatitude>
-                        <gmd:northBoundLatitude>
-                          <gco:Decimal/>
-                        </gmd:northBoundLatitude>
-                      </gmd:EX_GeographicBoundingBox>
-                    </gmd:geographicElement>
-                  </gmd:EX_Extent>
-                </gmd:extent>
+      <gmd:extent>
+        <mcp:EX_Extent gco:isoType="gmd:EX_Extent">
+          <gmd:geographicElement>
+            <gmd:EX_GeographicBoundingBox>
+              <gmd:westBoundLongitude>
+                <gco:Decimal/>
+              </gmd:westBoundLongitude>
+              <gmd:eastBoundLongitude>
+                <gco:Decimal/>
+              </gmd:eastBoundLongitude>
+              <gmd:southBoundLatitude>
+                <gco:Decimal/>
+              </gmd:southBoundLatitude>
+              <gmd:northBoundLatitude>
+                <gco:Decimal/>
+              </gmd:northBoundLatitude>
+            </gmd:EX_GeographicBoundingBox>
+          </gmd:geographicElement>
+          <gmd:temporalElement>
+            <mcp:EX_TemporalExtent gco:isoType="gmd:EX_TemporalExtent">
+              <gmd:extent>
+                <gml:TimePeriod gml:id="N10315">
+                  <gml:begin>
+                    <gml:TimeInstant gml:id="N1031B">
+                      <gml:timePosition/>
+                    </gml:TimeInstant>
+                  </gml:begin>
+                  <gml:end>
+                    <gml:TimeInstant gml:id="N10326">
+                      <gml:timePosition/>
+                    </gml:TimeInstant>
+                  </gml:end>
+                </gml:TimePeriod>
+              </gmd:extent>
+            </mcp:EX_TemporalExtent>
+          </gmd:temporalElement>
+        </mcp:EX_Extent>
+      </gmd:extent>
               </snippet>
             </template>
           </action>
-          <action type="add" name="TemporalExtent" or="temporalElement" 
-  if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement)=0" 
-  in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent"
-  del="../..">
-            <template>
-              <snippet>
-								<gmd:extent>
-                  <gmd:EX_Extent>
-										<gmd:temporalElement>
-            					<mcp:EX_TemporalExtent gco:isoType="gmd:EX_TemporalExtent">
-              					<gmd:extent>
-                					<gml:TimePeriod gml:id="N10315">
-                  					<gml:begin>
-                    					<gml:TimeInstant gml:id="N1031B">
-                      					<gml:timePosition/>
-                    					</gml:TimeInstant>
-                  					</gml:begin>
-                  					<gml:end>
-                    					<gml:TimeInstant gml:id="N10326">
-                      					<gml:timePosition/>
-                    					</gml:TimeInstant>
-                  					</gml:end>
-                					</gml:TimePeriod>
-              					</gmd:extent>
-            					</mcp:EX_TemporalExtent>
-          					</gmd:temporalElement>
-                  </gmd:EX_Extent>
-                </gmd:extent>
-							</snippet>
-						</template>
-					</action>
+<!-- Not used at O&A
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:samplingFrequency"/>
+-->
 				</section>
 			</tab>
 
 			<tab id="resourceSpatial" mode="flat">
 				<section>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:spatialRepresentationType"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:spatialResolution"/>
 					<field xpath="/mcp:MD_Metadata/gmd:referenceSystemInfo" or="referenceSystemInfo" in="/mcp:MD_Metadata"/>
 				</section>
 			</tab>
@@ -723,22 +725,9 @@ if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:e
 				<for name="mcp:party"/>
 				<for name="mcp:MD_Commons"/>
       </flatModeExceptions>
-			<!-- Thesauri -->
-			<thesaurusList>
-				<thesaurus key="external.theme.gcmd_keywords" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.discipline.urn:marlin.csiro.au:keywords:cmarAOI" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.project.urn:marlin.csiro.au:globalprojectregister" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.project.urn:marlin.csiro.au:projectregister" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.dataSource.urn:marlin.csiro.au:sourceregister" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.survey.urn:marlin.csiro.au:surveyregister" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.discipline.urn:marlin.csiro.au:keywords:standardDataType" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.equipment.urn:marlin.csiro.au:Equipment" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.place.urn:aodn.org.au:geographicextents" transformations="to-iso19139-keyword-with-anchor"/>
-				<thesaurus key="register.taxon.urn:lsid:marinespecies.org:taxname" transformations="to-iso19139-keyword-with-anchor"/>
-			</thesaurusList>
     </view>
 
-    <view name="advanced">
+    <view name="advanced" displayIfServiceInfo="count(session[profile='Administrator'])=1">
       <sidePanel>
         <directive data-gn-onlinesrc-list=""/>
         <directive gn-geo-publisher=""
@@ -746,8 +735,8 @@ if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:e
                    data-config="{{gnCurrentEdit.geoPublisherConfig}}"
                    data-lang="lang"/>
         <!-- <directive data-gn-validation-report=""/> -->
-        <directive data-gn-suggestion-list=""/>
-        <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/>
+        <!-- <directive data-gn-suggestion-list=""/> -->
+        <!-- <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/> -->
       </sidePanel>
       <tab id="All" default="true">
         <section xpath="/mcp:MD_Metadata/gmd:identificationInfo" or="identificationInfo"
@@ -832,8 +821,8 @@ if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:e
                    data-config="{{gnCurrentEdit.geoPublisherConfig}}"
                    data-lang="lang"/>
         <!-- <directive data-gn-validation-report=""/> -->
-        <directive data-gn-suggestion-list=""/>
-        <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/>
+        <!-- <directive data-gn-suggestion-list=""/> -->
+        <!-- <directive data-gn-need-help="user-guide/describing-information/creating-metadata.html"/> -->
       </sidePanel>
       <tab id="xml" default="true"/>
     </view>
