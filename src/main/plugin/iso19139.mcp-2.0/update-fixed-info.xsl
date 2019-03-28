@@ -152,8 +152,7 @@
         </xsl:otherwise>
       </xsl:choose>
 			<xsl:choose>
-        <!-- If new record then add current user as creator, IDC as 
-             pointOfContact and remove all processors and originators -->
+        <!-- If no originator then add current user as originator -->
         <xsl:when test="/root/env/created">
           <mcp:metadataContactInfo>
             <mcp:CI_Responsibility>
@@ -163,15 +162,7 @@
               <xsl:call-template name="addCurrentUserAsParty"/>
             </mcp:CI_Responsibility>
           </mcp:metadataContactInfo>
-          <mcp:metadataContactInfo>
-            <mcp:CI_Responsibility>
-              <mcp:role>
-                <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
-              </mcp:role>
-              <mcp:party xlink:href="{concat(/root/env/siteURL,'/subtemplate?uuid=urn:marlin.csiro.au:person:125_person_organisation')}"/>
-            </mcp:CI_Responsibility>
-          </mcp:metadataContactInfo>
-          <xsl:apply-templates select="mcp:metadataContactInfo[mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='processor' and mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='originator' and mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='pointOfContact']"/>
+          <xsl:call-template name="addIDCAsPointOfContact"/>
         </xsl:when>
         <!-- Add current user as processor, then process everything except the 
              existing processor which will be excluded from the output
@@ -181,7 +172,7 @@
         <xsl:otherwise>
           <xsl:choose>
             <xsl:when test="/root/env/user/details/username!='admin'">
-              <!-- marlin admin does not replace a processor, so add it unless username!='admin' -->
+              <!-- marlin admin does not replace a processor -->
               <mcp:metadataContactInfo>
                 <mcp:CI_Responsibility>
                   <mcp:role>
@@ -190,17 +181,34 @@
                   <xsl:call-template name="addCurrentUserAsParty"/>
                 </mcp:CI_Responsibility>
               </mcp:metadataContactInfo>
-              <xsl:apply-templates select="mcp:metadataContactInfo[mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='processor']"/>
+              <xsl:call-template name="addIDCAsPointOfContact"/>
+              <!-- copy any other metadata contacts with the exception of processors and 
+                   pointOfContact so we make sure that IDC is point of contact -->
+              <xsl:apply-templates select="mcp:metadataContactInfo[not(mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode='processor' or mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode='pointOfContact')]"/>
             </xsl:when>
             <xsl:otherwise>
-              <!-- marlin admin does not replace a processor, so grab all mcp:metadataContactInfo -->
-              <xsl:apply-templates select="mcp:metadataContactInfo"/>
+              <!-- marlin admin does not replace a processor, so add IDC and then grab all mcp:metadataContactInfo except pointOfContact -->
+              <xsl:call-template name="addIDCAsPointOfContact"/>
+              <xsl:apply-templates select="mcp:metadataContactInfo[mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode!='pointOfContact']"/>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
 		</xsl:copy>
 	</xsl:template>
+
+	<!-- ================================================================= -->
+
+  <xsl:template name="addIDCAsPointOfContact">
+          <mcp:metadataContactInfo>
+            <mcp:CI_Responsibility>
+              <mcp:role>
+                <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+              </mcp:role>
+              <mcp:party xlink:href="local://xml.metadata.get?uuid=urn:marlin.csiro.au:person:125_person_organisation"/>
+            </mcp:CI_Responsibility>
+          </mcp:metadataContactInfo>
+  </xsl:template>
 
 	<!-- ================================================================= -->
 

@@ -325,8 +325,11 @@
             </template>
           </action>
 
+          <!-- No need to display metadata contacts  -->
+          <!--
           <field xpath="/mcp:MD_Metadata/gmd:contact" notDisplayedIfMissing="true"/>
           <field xpath="/mcp:MD_Metadata/mcp:metadataContactInfo" in="/mcp:MD_Metadata"/>
+          -->
 					<!-- always display an add action that will add a new 
 					     metadataContactInfo block with just the role and
 							 party in it -->
