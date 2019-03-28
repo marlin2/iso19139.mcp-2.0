@@ -212,7 +212,7 @@
                   <mcp:individual>
                     <mcp:CI_Individual>
                       <mcp:name>
-                        <gco:CharacterString><xsl:value-of select="concat(/root/env/user/details/surname,', ',/root/env/user/details/name)"/></gco:CharacterString>
+                        <gco:CharacterString><xsl:value-of select="concat(/root/env/user/details/surname,', ',/root/env/user/details/firstname)"/></gco:CharacterString>
                       </mcp:name>
                     </mcp:CI_Individual>
                   </mcp:individual>
