@@ -52,17 +52,6 @@
       <Field name="publicationDate" string="{string(.)}" store="true" index="true"/>
     </xsl:for-each>
 
-    <xsl:for-each select="mcp:responsibleParty/mcp:CI_Responsibility/mcp:party/mcp:CI_Organisation/mcp:name/gco:CharacterString">
-      <xsl:variable name="org" select="string(.)"/>
-
-      <Field name="orgName" string="{$org}" store="true" index="true"/>
-
-      <xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
-      <xsl:for-each select="../../../../mcp:role/*/@codeListValue">
-        <Field name="responsibleParty" string="{concat(., '|resource|', $org, '|', $logo)}" store="true" index="false"/>
-      </xsl:for-each>
-    </xsl:for-each>
-
     <xsl:apply-templates mode="index" select="*"/>
   </xsl:template>
 
@@ -130,42 +119,22 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <xsl:template mode="index" match="mcp:resourceContactInfo[1]/mcp:CI_Responsibility/mcp:role/*/@codeListValue">
-
-    <Field name="responsiblePartyRole" string="{string(.)}" store="false" index="true"/>
-
+  <xsl:template mode="index" match="mcp:resourceContactInfo">
+    <xsl:apply-templates mode="index-mcp-contact" select="mcp:CI_Responsibility">
+      <xsl:with-param name="type" select="'resource'"/>
+      <xsl:with-param name="fieldPrefix" select="'responsibleParty'"/>     
+      <xsl:with-param name="position" select="count(preceding-sibling::*)"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <xsl:template mode="index" match="mcp:resourceContactInfo/mcp:CI_Responsibility//mcp:party/mcp:CI_Organisation/mcp:name[not(@gco:nilReason)]/gco:CharacterString">
-
-    <xsl:variable name="org" select="string(.)"/>
-
-    <Field name="orgName" string="{$org}" store="true" index="true"/>
-
-    <xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
-    <xsl:for-each select="../../../../mcp:role/*/@codeListValue">
-      <Field name="responsibleParty" string="{concat(., '|resource|', $org, '|', $logo)}" store="true" index="false"/>
-    </xsl:for-each>
-
-    <xsl:apply-templates mode="index" select="*"/>
-  </xsl:template>
-
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-  <xsl:template mode="index" match="mcp:metadataContactInfo/mcp:CI_Responsibility//mcp:party/mcp:CI_Organisation/mcp:name[not(@gco:nilReason)]/gco:CharacterString">
-
-    <xsl:variable name="org" select="."/>
-
-    <Field name="metadataPOC" string="{$org}" store="true" index="true"/>
-
-    <xsl:variable name="logo" select="../..//gmx:FileName/@src"/>
-    <xsl:for-each select="../../../../mcp:role/*/@codeListValue">
-      <Field name="responsibleParty" string="{concat(., '|metadata|', $org, '|', $logo)}" store="true" index="false"/>
-    </xsl:for-each>
-
-    <xsl:apply-templates mode="index" select="*"/>
+  <xsl:template mode="index" match="mcp:metadataContactInfo">
+    <xsl:apply-templates mode="index-mcp-contact" select="mcp:CI_Responsibility">
+      <xsl:with-param name="type" select="'metadata'"/>
+      <xsl:with-param name="fieldPrefix" select="'responsibleParty'"/>     
+      <xsl:with-param name="position" select="count(preceding-sibling::*)"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -260,4 +229,49 @@
 	</xsl:template>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
+
+  <xsl:template mode="index-mcp-contact" match="mcp:CI_Responsibility">
+    <xsl:param name="type"/>
+    <xsl:param name="fieldPrefix"/>
+    <xsl:param name="position" select="'0'"/>
+
+      <xsl:variable name="orgName" select="mcp:party/mcp:CI_Organisation/mcp:name/gco:CharacterString"/>
+
+      <Field name="orgName" string="{$orgName}" store="true" index="true"/>
+      <Field name="orgNameTree" string="{$orgName}" store="true" index="true"/>
+
+      <xsl:variable name="role" select="mcp:role/*/@codeListValue"/>
+      <xsl:variable name="logo" select="''"/>
+      <xsl:variable name="uuid" select="''"/>
+      <xsl:variable name="email" select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress/gco:CharacterString"/>
+      <xsl:variable name="phone"
+                  select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:phone/*/gmd:voice[normalize-space(.) != '']/*/text()"/>
+      <xsl:variable name="individualName"
+                  select="mcp:party/mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:name/gco:CharacterString/text()"/>
+      <xsl:variable name="positionName"
+                  select="mcp:party/mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:positionName/gco:CharacterString/text()"/>
+      <xsl:variable name="address" select="string-join(mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/(gmd:deliveryPoint|gmd:postalCode|gmd:city|gmd:administrativeArea|gmd:country)/gco:CharacterString/text(), ', ')"/>
+
+      <Field name="{$fieldPrefix}"
+             string="{concat($role, '|', $type ,'|',
+                             $orgName, '|',
+                             $logo, '|',
+                             string-join($email, ','), '|',
+                             $individualName, '|',
+                             $positionName, '|',
+                             $address, '|',
+                             string-join($phone, ','), '|',
+                             $uuid, '|',
+                             $position)}"
+             store="true" index="false"/>
+
+      <xsl:for-each select="$email">
+        <Field name="{$fieldPrefix}Email" string="{string(.)}" store="true" index="true"/>
+        <Field name="{$fieldPrefix}RoleAndEmail" string="{$role}|{string(.)}" store="true" index="true"/>
+      </xsl:for-each>
+      <xsl:for-each select="@uuid">
+        <Field name="{$fieldPrefix}Uuid" string="{string(.)}" store="true" index="true"/>
+        <Field name="{$fieldPrefix}RoleAndUuid" string="{$role}|{string(.)}" store="true" index="true"/>
+      </xsl:for-each>
+  </xsl:template>
 </xsl:stylesheet>
