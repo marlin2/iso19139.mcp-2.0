@@ -787,7 +787,8 @@
 	<xsl:template name="addMetadataURLInternals">
 		<gmd:linkage>
 			<gmd:URL>
-				<xsl:value-of select="concat($apiSiteUrl,'api/records/',/root/env/uuid,'/formatters/xml')"/>
+				<!-- <xsl:value-of select="concat($apiSiteUrl,'api/records/',/root/env/uuid,'/formatters/xml')"/> Not this one as that is just the xml, we want a presentation of the xml instead -->
+				<xsl:value-of select="concat($siteURL,'catalog.search#/metadata/',/root/env/uuid)"/>
 			</gmd:URL>
 		</gmd:linkage>
 		<gmd:protocol>
