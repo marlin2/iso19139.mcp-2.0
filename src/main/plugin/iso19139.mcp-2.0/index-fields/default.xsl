@@ -243,7 +243,7 @@
       <xsl:variable name="role" select="mcp:role/*/@codeListValue"/>
       <xsl:variable name="logo" select="''"/>
       <xsl:variable name="uuid" select="''"/>
-      <xsl:variable name="email" select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress/gco:CharacterString"/>
+      <xsl:variable name="email" select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress[not(@gco:nilReason='missing')]/gco:CharacterString|mcp:party/mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress[not(@gco:nilReason='missing')]/gco:CharacterString"/>
       <xsl:variable name="phone"
                   select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:phone/*/gmd:voice[normalize-space(.) != '']/*/text()"/>
       <xsl:variable name="individualName"
