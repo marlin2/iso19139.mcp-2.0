@@ -35,6 +35,8 @@
 
   <xsl:variable name="equipThesaurus" select="'geonetwork.thesaurus.register.equipment.urn:marlin.csiro.au:Equipment'"/>
 
+  <xsl:variable name="idcContact" select="document('http://www.marlin.csiro.au/geonetwork/srv/eng/subtemplate?uuid=urn:marlin.csiro.au:person:125_person_organisation')"/>
+
 
 	<!-- ================================================================= -->
 	
@@ -77,7 +79,7 @@
       </xsl:choose>
       <xsl:apply-templates select="gmd:hierarchyLevel"/>
       <xsl:apply-templates select="gmd:hierarchyLevelName"/>
-      <xsl:apply-templates select="gmd:contact"/>
+      <xsl:call-template name="addIDCContact"/>
 			<xsl:choose>
 				<xsl:when test="not(gmd:dateStamp) or normalize-space(gmd:dateStamp/*)=''">
 					<gmd:dateStamp>
@@ -196,6 +198,43 @@
       </xsl:choose>
 		</xsl:copy>
 	</xsl:template>
+
+  <!-- ================================================================= -->
+
+  <xsl:template name="addIDCContact">
+    <xsl:variable name="org" select="$idcContact//*:name/gco:CharacterString"/>
+    <xsl:element name="gmd:contact">
+      <xsl:element name="gmd:CI_ResponsibleParty">
+        <xsl:element name="gmd:organisationName"><gco:CharacterString><xsl:value-of select="$org"/></gco:CharacterString></xsl:element>
+        <xsl:element name="gmd:positionName"><gco:CharacterString><xsl:value-of select="$idcContact//*:positionName/gco:CharacterString"/></gco:CharacterString></xsl:element>
+        <xsl:element name="gmd:contactInfo">
+          <xsl:element name="gmd:CI_Contact">
+            <xsl:copy-of select="$idcContact//*:contactInfo/gmd:CI_Contact/gmd:address" copy-namespaces="no"/>
+            <gmd:onlineResource>
+              <gmd:CI_OnlineResource>
+                <gmd:linkage>
+                  <gmd:URL>https://research.csiro.au/oa-idc/</gmd:URL>
+                </gmd:linkage>
+                <gmd:protocol>
+                  <gco:CharacterString>WWW:LINK-1.0-http--link</gco:CharacterString>
+                </gmd:protocol>
+                <gmd:name>
+                  <gco:CharacterString><xsl:value-of select="concat($org,' homepage')"/></gco:CharacterString>
+                </gmd:name>
+                <gmd:description>
+                  <gco:CharacterString><xsl:value-of select="concat('Link to ',$org,' homepage')"/></gco:CharacterString>
+                </gmd:description>
+              </gmd:CI_OnlineResource>
+            </gmd:onlineResource>
+          </xsl:element>
+        </xsl:element>
+        <gmd:role>
+          <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
+                             codeListValue="pointOfContact">pointOfContact</gmd:CI_RoleCode>
+        </gmd:role>
+      </xsl:element>
+    </xsl:element>
+  </xsl:template>
 
 	<!-- ================================================================= -->
 
@@ -788,7 +827,7 @@
 		<gmd:linkage>
 			<gmd:URL>
 				<!-- <xsl:value-of select="concat($apiSiteUrl,'api/records/',/root/env/uuid,'/formatters/xml')"/> Not this one as that is just the xml, we want a presentation of the xml instead -->
-				<xsl:value-of select="concat($siteURL,'catalog.search#/metadata/',/root/env/uuid)"/>
+				<xsl:value-of select="concat(/root/env/siteURL,'catalog.search#/metadata/',/root/env/uuid)"/>
 			</gmd:URL>
 		</gmd:linkage>
 		<gmd:protocol>
