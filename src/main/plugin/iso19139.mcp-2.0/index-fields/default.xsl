@@ -8,6 +8,7 @@
 			xmlns:geonet="http://www.fao.org/geonetwork"
 			xmlns:mcp="http://schemas.aodn.org.au/mcp-2.0"
 			xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
 			xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 			exclude-result-prefixes="gmd gmx gco gml srv geonet mcp xlink xsl">
 
@@ -120,18 +121,24 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <xsl:template mode="index" match="mcp:resourceContactInfo">
-    <xsl:apply-templates mode="index-mcp-contact" select="mcp:CI_Responsibility">
-      <xsl:with-param name="type" select="'resource'"/>
-      <xsl:with-param name="fieldPrefix" select="'responsibleParty'"/>     
-      <xsl:with-param name="position" select="count(preceding-sibling::*)"/>
-    </xsl:apply-templates>
+    <xsl:variable name="pos" select="count(preceding-sibling::*//mcp:party)-1" as="xs:integer"/>
+
+    <xsl:for-each select="mcp:CI_Responsibility/mcp:party">
+      <xsl:apply-templates mode="index-mcp-contact" select=".">
+        <xsl:with-param name="type" select="'resource'"/>
+        <xsl:with-param name="role" select="../mcp:role/*"/>
+        <xsl:with-param name="fieldPrefix" select="'responsibleParty'"/>     
+        <xsl:with-param name="position" select="$pos+position()"/>
+      </xsl:apply-templates>
+    </xsl:for-each>
   </xsl:template>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <xsl:template mode="index" match="mcp:metadataContactInfo">
-    <xsl:apply-templates mode="index-mcp-contact" select="mcp:CI_Responsibility">
+    <xsl:apply-templates mode="index-mcp-contact" select="mcp:CI_Responsibility/mcp:party">
       <xsl:with-param name="type" select="'metadata'"/>
+      <xsl:with-param name="role" select="mcp:CI_Responsibility/mcp:role/*"/>
       <xsl:with-param name="fieldPrefix" select="'responsibleParty'"/>     
       <xsl:with-param name="position" select="count(preceding-sibling::*)"/>
     </xsl:apply-templates>
@@ -230,27 +237,27 @@
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->		
 
-  <xsl:template mode="index-mcp-contact" match="mcp:CI_Responsibility">
+  <xsl:template mode="index-mcp-contact" match="mcp:party">
     <xsl:param name="type"/>
+    <xsl:param name="role"/>
     <xsl:param name="fieldPrefix"/>
     <xsl:param name="position" select="'0'"/>
 
-      <xsl:variable name="orgName" select="mcp:party/mcp:CI_Organisation/mcp:name/gco:CharacterString"/>
+      <xsl:variable name="orgName" select="mcp:CI_Organisation/mcp:name/gco:CharacterString"/>
 
       <Field name="orgName" string="{$orgName}" store="true" index="true"/>
       <Field name="orgNameTree" string="{$orgName}" store="true" index="true"/>
 
-      <xsl:variable name="role" select="mcp:role/*/@codeListValue"/>
       <xsl:variable name="logo" select="''"/>
       <xsl:variable name="uuid" select="''"/>
-      <xsl:variable name="email" select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress[not(@gco:nilReason='missing')]/gco:CharacterString|mcp:party/mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress[not(@gco:nilReason='missing')]/gco:CharacterString"/>
+      <xsl:variable name="email" select="mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress[not(@gco:nilReason='missing')]/gco:CharacterString|mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:contactInfo/*/gmd:address/*/gmd:electronicMailAddress[not(@gco:nilReason='missing')]/gco:CharacterString"/>
       <xsl:variable name="phone"
-                  select="mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:phone/*/gmd:voice[normalize-space(.) != '']/*/text()"/>
+                  select="mcp:CI_Organisation/mcp:contactInfo/*/gmd:phone/*/gmd:voice[normalize-space(.) != '']/*/text()"/>
       <xsl:variable name="individualName"
-                  select="mcp:party/mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:name/gco:CharacterString/text()"/>
+                  select="mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:name/gco:CharacterString/text()"/>
       <xsl:variable name="positionName"
-                  select="mcp:party/mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:positionName/gco:CharacterString/text()"/>
-      <xsl:variable name="address" select="string-join(mcp:party/mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/(gmd:deliveryPoint|gmd:postalCode|gmd:city|gmd:administrativeArea|gmd:country)/gco:CharacterString/text(), ', ')"/>
+                  select="mcp:CI_Organisation/mcp:individual/mcp:CI_Individual/mcp:positionName/gco:CharacterString/text()"/>
+      <xsl:variable name="address" select="string-join(mcp:CI_Organisation/mcp:contactInfo/*/gmd:address/*/(gmd:deliveryPoint|gmd:postalCode|gmd:city|gmd:administrativeArea|gmd:country)/gco:CharacterString/text(), ', ')"/>
 
       <Field name="{$fieldPrefix}"
              string="{concat($role, '|', $type ,'|',

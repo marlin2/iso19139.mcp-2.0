@@ -292,13 +292,26 @@
           <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevelName" or="hierarchyLevelName" in="/mcp:MD_Metadata"/>
           -->
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:supplementalInformation" or="supplementalInformation" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance" or="resourceMaintenance" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance"/>
+          <action type="add" name="resourceMaintenance" or="resourceMaintenance" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
+            <template>
+              <snippet>
+                <gmd:resourceMaintenance>
+									<gmd:MD_MaintenanceInformation>
+									  <gmd:maintenanceAndUpdateFrequency>
+											<gmd:MD_MaintenanceFrequencyCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
+										</gmd:maintenanceAndUpdateFrequency>
+									</gmd:MD_MaintenanceInformation>
+                </gmd:resourceMaintenance>
+              </snippet>
+            </template>
+          </action>
 				</section>
 			</tab>
 
 			<tab id="resourceKeywords" mode="flat">
 				<section>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:topicCategory" or="topicCategory" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:topicCategory"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:descriptiveKeywords" or="descriptiveKeywords" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 				</section>
 			</tab>
