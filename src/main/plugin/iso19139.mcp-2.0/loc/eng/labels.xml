@@ -420,4 +420,22 @@ The authorship information for the scientificName. Example: Linnaeus, 1758
       <option show="y" value="WWW:LINK-1.0-http--link">Web link (URL) - use this if one of the above does not apply</option>
     </helper>
 	</element>
+	<element name="dq_title" id="9600.0">
+		<label>Title</label>
+		<description>
+Data Quality Report Title
+    </description>
+	</element>
+	<element name="dq_date" id="9601.0">
+		<label>Date</label>
+		<description>
+Date that Data Quality test was done.
+    </description>
+	</element>
+	<element name="dq_explanation" id="9602.0">
+		<label>Explanation</label>
+		<description>
+Description of the result of the data quality test.
+    </description>
+	</element>
 </labels>
