@@ -327,7 +327,18 @@
       	<xsl:copy-of select="."/>
       </xsl:for-each>
 
-			<!-- Finally, copy in the resourceContactInfo -->
+			<!-- Finally, if no custodian then copy in a resource contact with
+           role custodian, then the copy the other resourceContactInfo -->
+      <xsl:if test="count(mcp:resourceContactInfo/mcp:CI_Responsibility/mcp:role/gmd:CI_RoleCode[@codeListValue='custodian'])=0">
+        <mcp:resourceContactInfo>
+            <mcp:CI_Responsibility>
+               <mcp:role>
+                  <gmd:CI_RoleCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
+                                   codeListValue="custodian">custodian</gmd:CI_RoleCode>
+               </mcp:role>
+            </mcp:CI_Responsibility>
+         </mcp:resourceContactInfo>
+      </xsl:if>
       <xsl:apply-templates select="mcp:resourceContactInfo"/>
    
     </xsl:copy>
