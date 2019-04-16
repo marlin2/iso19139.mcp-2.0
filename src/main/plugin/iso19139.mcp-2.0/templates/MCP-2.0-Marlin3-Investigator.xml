@@ -86,7 +86,7 @@
       <gmd:citation>
         <gmd:CI_Citation>
           <gmd:title>
-            <gco:CharacterString>MarLIN3 Marine Community Profile V2.0 Template</gco:CharacterString>
+            <gco:CharacterString>Investigator MarLIN3 Marine Community Profile V2.0 Template</gco:CharacterString>
           </gmd:title>
           <gmd:date gco:nilReason="missing">
           </gmd:date>
@@ -98,22 +98,23 @@
       <gmd:status>
         <gmd:MD_ProgressCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue=""/>
       </gmd:status>
-      <gmd:resourceConstraints>
-            <mcp:MD_Commons mcp:commonsType="Creative Commons" gco:isoType="gmd:MD_Constraints">
-               <mcp:jurisdictionLink>
-                  <gmd:URL>https://creativecommons.org/licenses</gmd:URL>
-               </mcp:jurisdictionLink>
-               <mcp:licenseLink>
-                  <gmd:URL>https://creativecommons.org/licenses/by/4.0/</gmd:URL>
-               </mcp:licenseLink>
-               <mcp:imageLink>
-                  <gmd:URL>https://i.creativecommons.org/l/by/4.0/88x31.png</gmd:URL>
-               </mcp:imageLink>
-               <mcp:licenseName>
-                  <gco:CharacterString>Attribution 4.0</gco:CharacterString>
-               </mcp:licenseName>
-            </mcp:MD_Commons>
-       </gmd:resourceConstraints>
+        <gmd:resourceConstraints>
+            <gmd:MD_LegalConstraints>
+               <gmd:useLimitation>
+                  <gco:CharacterString>This licence allows user to use the data for non-commercial purposes with appropriate attribution. The rights granted under this licence are personal to the user and not capable of assignment. Data cannot be distributed nor have any intellectual property rights asserted over the data. CSIRO must not be represented as being responsible for the accuracy, correctness of the data or for any output of any application of the data. Nor does CSIRO support or endorse use of the data or any products derived or conclusions or predictions drawn from this data.
+
+https://wiki.csiro.au/display/dmsdoc/CSIRO+Data+Licence</gco:CharacterString>
+               </gmd:useLimitation>
+               <gmd:accessConstraints>
+                  <gmd:MD_RestrictionCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+                                          codeListValue="restricted">restricted</gmd:MD_RestrictionCode>
+               </gmd:accessConstraints>
+               <gmd:useConstraints>
+                  <gmd:MD_RestrictionCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode"
+                                          codeListValue="restricted">restricted</gmd:MD_RestrictionCode>
+               </gmd:useConstraints>
+            </gmd:MD_LegalConstraints>
+         </gmd:resourceConstraints>
       <gmd:spatialRepresentationType>
         <gmd:MD_SpatialRepresentationTypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" codeListValue=""/>
       </gmd:spatialRepresentationType>
