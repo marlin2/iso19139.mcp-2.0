@@ -193,6 +193,7 @@
   <accessConstraints>Access constraints</accessConstraints>
   <useLimitation>Use limitation</useLimitation>
   <notEvaluated>Not evaluated</notEvaluated>
+  <noPublications>No Publications</noPublications>
   <add-resource-id>Compute resource identifier</add-resource-id>
   <add-resource-idHelp>Compose the resource identifier using the catalog URL and the metadata identifier (eg. http://www.organization.org/catalogue/5391bf69-44bc-4ea0-8cc0-6cf6c3bc81ae).</add-resource-idHelp>
   <add-extent-from-geokeywords>Compute extent from keyword</add-extent-from-geokeywords>
@@ -220,6 +221,8 @@
   <dataParameters>Parameters</dataParameters>
   <distributionFormat>Format</distributionFormat>
   <distributionFormatNoTitle></distributionFormatNoTitle>
+  <publications>Publications</publications>
+  <publicationDetails>Details</publicationDetails>
 
   <useAssociatedResources><span>Add an online resource for distribution using the "<i class="fa fa-link"></i><i class="icon-external-link"></i>Associated resources" panel at the right hand side of the form</span></useAssociatedResources>
   <custodianIsMandatory><span>You *must* have a resource custodian! Please select one by searching or typing in the box. If you can't find a custodian then enter one manually by pressing the '+' button.</span></custodianIsMandatory>

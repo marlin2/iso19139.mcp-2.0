@@ -29,6 +29,7 @@
     <for name="gmd:specificUsage" use="textarea"/>
     <for name="gmd:userNote" use="textarea"/>
     <for name="gmd:useLimitation" use="textarea"/>
+    <for name="gmd:title" use="textarea"/>
 
 
     <for name="gco:Distance" use="number"/>
@@ -712,6 +713,81 @@
               </snippet>
             </template>
         	</field>
+				</section>
+			</tab>
+
+			<tab id="publications" mode="flat">
+				<section>
+          <field name="publications" xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:aggregationInfo" templateModeOnly="true" isMissingLabel="noPublications" >
+            <template>
+              <values>
+                <key label="publicationDetails" xpath="gmd:MD_AggregateInformation/gmd:aggregateDataSetName/gmd:CI_Citation/gmd:title/gco:CharacterString" use="textarea" tooltip="dq_title"/>
+              </values>
+              <snippet>
+
+       <gmd:aggregationInfo>
+            <gmd:MD_AggregateInformation>
+               <gmd:aggregateDataSetName>
+                  <gmd:CI_Citation>
+                     <gmd:title>
+                        <gco:CharacterString>{{publicationDetails}}</gco:CharacterString>
+                     </gmd:title>
+                     <gmd:date>
+                        <gmd:CI_Date>
+                           <gmd:date gco:nilReason="missing"/>
+                           <gmd:dateType>
+                              <gmd:CI_DateTypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                                                   codeListValue="publication">publication</gmd:CI_DateTypeCode>
+                           </gmd:dateType>
+                        </gmd:CI_Date>
+                     </gmd:date>
+                  </gmd:CI_Citation>
+               </gmd:aggregateDataSetName>
+               <gmd:associationType>
+                  <gmd:DS_AssociationTypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#DS_AssociationTypeCode"
+                                              codeListValue="crossReference">crossReference</gmd:DS_AssociationTypeCode>
+               </gmd:associationType>
+            </gmd:MD_AggregateInformation>
+         </gmd:aggregationInfo>
+
+              </snippet>
+            </template>
+          </field>
+<!--
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:aggregationInfo/gmd:MD_AggregateInformation/gmd:aggregateDataSetName/gmd:CI_Citation/gmd:title" name="publication"/>
+          <action type="add" name="publication" or="aggregationInfo" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
+            <template>
+              <snippet>
+
+       <gmd:aggregationInfo>
+            <gmd:MD_AggregateInformation>
+               <gmd:aggregateDataSetName>
+                  <gmd:CI_Citation>
+                     <gmd:title>
+                        <gco:CharacterString>Enter publication details (Title, Authors, etc) here....</gco:CharacterString>
+                     </gmd:title>
+                     <gmd:date>
+                        <gmd:CI_Date>
+                           <gmd:date gco:nilReason="missing"/>
+                           <gmd:dateType>
+                              <gmd:CI_DateTypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                                                   codeListValue="publication">publication</gmd:CI_DateTypeCode>
+                           </gmd:dateType>
+                        </gmd:CI_Date>
+                     </gmd:date>
+                  </gmd:CI_Citation>
+               </gmd:aggregateDataSetName>
+               <gmd:associationType>
+                  <gmd:DS_AssociationTypeCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#DS_AssociationTypeCode"
+                                              codeListValue="crossReference">crossReference</gmd:DS_AssociationTypeCode>
+               </gmd:associationType>
+            </gmd:MD_AggregateInformation>
+         </gmd:aggregationInfo>
+
+              </snippet>
+            </template>
+        	</action>
+-->
 				</section>
 			</tab>
 
