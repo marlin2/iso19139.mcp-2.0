@@ -288,25 +288,30 @@
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:abstract"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:purpose"/>
           <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:status"/>
-          <!--
-          <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevel" or="hierarchyLevel" in="/mcp:MD_Metadata"/>
-          <field xpath="/mcp:MD_Metadata/gmd:hierarchyLevelName" or="hierarchyLevelName" in="/mcp:MD_Metadata"/>
-          -->
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:supplementalInformation" or="supplementalInformation" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance"/>
+          <action type="add" name="status" or="status" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:status)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
+            <template>
+              <snippet>
+                <gmd:status>
+									<gmd:MD_ProgressCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_ProgressCode" codeListValue=""/>
+                </gmd:status>
+              </snippet>
+            </template>
+          </action>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance" />
           <action type="add" name="resourceMaintenance" or="resourceMaintenance" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:resourceMaintenance)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
             <template>
               <snippet>
                 <gmd:resourceMaintenance>
 									<gmd:MD_MaintenanceInformation>
 									  <gmd:maintenanceAndUpdateFrequency>
-											<gmd:MD_MaintenanceFrequencyCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#CI_RoleCode" codeListValue=""/>
+											<gmd:MD_MaintenanceFrequencyCode codeList="http://schemas.aodn.org.au/mcp-2.0/schema/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode" codeListValue=""/>
 										</gmd:maintenanceAndUpdateFrequency>
 									</gmd:MD_MaintenanceInformation>
                 </gmd:resourceMaintenance>
               </snippet>
             </template>
           </action>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:supplementalInformation" or="supplementalInformation" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification"/>
 				</section>
 			</tab>
 
@@ -721,7 +726,7 @@
           <field name="publications" xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:aggregationInfo" templateModeOnly="true" isMissingLabel="noPublications" >
             <template>
               <values>
-                <key label="publicationDetails" xpath="gmd:MD_AggregateInformation/gmd:aggregateDataSetName/gmd:CI_Citation/gmd:title/gco:CharacterString" use="textarea" tooltip="dq_title"/>
+                <key label="publicationDetails" xpath="gmd:MD_AggregateInformation/gmd:aggregateDataSetName/gmd:CI_Citation/gmd:title/gco:CharacterString" use="textarea" tooltip="publications"/>
               </values>
               <snippet>
 
@@ -820,6 +825,7 @@
       <!-- Elements that should not use the "flat" mode --> 
       <flatModeExceptions>
         <for name="gmd:descriptiveKeywords" />
+			  <for name="gmd:maintenanceAndUpdateFrequency" />
 				<for name="mcp:party"/>
 				<for name="mcp:MD_Commons"/>
       </flatModeExceptions>

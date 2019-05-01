@@ -18,7 +18,9 @@
 		<xs:complexContent>
 			<xs:extension base="gco:AbstractObject_Type">
 				<xs:sequence>
-					<xs:element name="maintenanceAndUpdateFrequency" type="gmd:MD_MaintenanceFrequencyCode_PropertyType"/>
+					<!-- <xs:element name="maintenanceAndUpdateFrequency" type="gmd:MD_MaintenanceFrequencyCode_PropertyType"/> -->
+          <!-- Make this element not mandatory, S. Pigot, May, 2019 -->
+					<xs:element name="maintenanceAndUpdateFrequency" type="gmd:MD_MaintenanceFrequencyCode_PropertyType" minOccurs="0"/>
 					<xs:element name="dateOfNextUpdate" type="gco:Date_PropertyType" minOccurs="0"/>
 					<xs:element name="userDefinedMaintenanceFrequency" type="gts:TM_PeriodDuration_PropertyType" minOccurs="0"/>
 					<xs:element name="updateScope" type="gmd:MD_ScopeCode_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
