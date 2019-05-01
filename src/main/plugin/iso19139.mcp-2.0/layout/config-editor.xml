@@ -186,6 +186,7 @@
 		<name>mcp:dataParameters</name>
 		<name>mcp:resourceContactInfo</name>
 		<name>mcp:metadataContactInfo</name>
+		<name>gml:TimePeriod</name>
   </fieldsWithFieldset>
 
   <multilingualFields>
@@ -372,30 +373,13 @@
 
 			</tab>
 
-			<tab id="resourceExtents" mode="flat">
+			<tab id="resourceTemporal" mode="flat">
 				<section>
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent"/>
-          <action type="add" name="extent" or="extent" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification">
+
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/mcp:EX_TemporalExtent/gmd:extent/gml:TimePeriod" del="../../.."/>
+          <action type="add" name="temporalElement" or="temporalElement" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent">
             <template>
               <snippet>
-      <gmd:extent>
-        <mcp:EX_Extent gco:isoType="gmd:EX_Extent">
-          <gmd:geographicElement>
-            <gmd:EX_GeographicBoundingBox>
-              <gmd:westBoundLongitude>
-                <gco:Decimal/>
-              </gmd:westBoundLongitude>
-              <gmd:eastBoundLongitude>
-                <gco:Decimal/>
-              </gmd:eastBoundLongitude>
-              <gmd:southBoundLatitude>
-                <gco:Decimal/>
-              </gmd:southBoundLatitude>
-              <gmd:northBoundLatitude>
-                <gco:Decimal/>
-              </gmd:northBoundLatitude>
-            </gmd:EX_GeographicBoundingBox>
-          </gmd:geographicElement>
           <gmd:temporalElement>
             <mcp:EX_TemporalExtent gco:isoType="gmd:EX_TemporalExtent">
               <gmd:extent>
@@ -414,14 +398,10 @@
               </gmd:extent>
             </mcp:EX_TemporalExtent>
           </gmd:temporalElement>
-        </mcp:EX_Extent>
-      </gmd:extent>
               </snippet>
             </template>
           </action>
-<!-- Not used at O&A
-          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/mcp:samplingFrequency"/>
--->
+
 				</section>
 			</tab>
 
@@ -432,6 +412,31 @@
           <!-- show the add reference system info directive only if there
                is no reference system -->
           <field xpath="/mcp:MD_Metadata/gmd:referenceSystemInfo" or="referenceSystemInfo" in="/mcp:MD_Metadata" if="count(mcp:MD_Metadata/gmd:referenceSystemInfo)=0"/>
+          <field xpath="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement"/>
+
+          <action type="add" name="geographicElement" or="geographicElement" if="count(mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:geographicElement)=0" in="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent">
+            <template>
+              <snippet>
+          <gmd:geographicElement>
+            <gmd:EX_GeographicBoundingBox>
+              <gmd:westBoundLongitude>
+                <gco:Decimal/>
+              </gmd:westBoundLongitude>
+              <gmd:eastBoundLongitude>
+                <gco:Decimal/>
+              </gmd:eastBoundLongitude>
+              <gmd:southBoundLatitude>
+                <gco:Decimal/>
+              </gmd:southBoundLatitude>
+              <gmd:northBoundLatitude>
+                <gco:Decimal/>
+              </gmd:northBoundLatitude>
+            </gmd:EX_GeographicBoundingBox>
+          </gmd:geographicElement>
+              </snippet>
+            </template>
+          </action>
+
 				</section>
 			</tab>
 
@@ -487,10 +492,6 @@
           <field name="completenessOmission" templateModeOnly="true" isMissingLabel="notEvaluated" xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report[gmd:DQ_CompletenessOmission]" del=".">
             <template>
               <values>
-                <key label="conformity_title" xpath="gmd:DQ_CompletenessOmission/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString" tooltip="dq_title">
-                  <helper name="gmd:title" context="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_CompletenessOmission/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title"></helper>
-                </key>
-                <key label="conformity_date" xpath="gmd:DQ_CompletenessOmission/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date" use="date" tooltip="dq_date"/>
                 <key label="explanation" xpath="gmd:DQ_CompletenessOmission/gmd:result/gmd:DQ_ConformanceResult/gmd:explanation/gco:CharacterString" use="textarea" tooltip="dq_explanation"/>
               </values>
               <snippet>
@@ -501,22 +502,9 @@
                   <gmd:DQ_ConformanceResult>
                     <gmd:specification>
                       <gmd:CI_Citation>
-                        <gmd:title>
-                          <gco:CharacterString>{{conformity_title}}</gco:CharacterString>
-                        </gmd:title>
+                        <gmd:title gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:alternateTitle"/>
-                        <gmd:date>
-                          <gmd:CI_Date>
-                            <gmd:date>
-                              <gco:Date>{{conformity_date}}</gco:Date>
-                            </gmd:date>
-                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode
-                                codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode"
-                                codeListValue="publication"/>
-                            </gmd:dateType>
-                          </gmd:CI_Date>
-                        </gmd:date>
+                        <gmd:date gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:edition"/>
                         <gn:copy select="gmd:editionDate"/>
                         <gn:copy select="gmd:identifier"/>
@@ -546,10 +534,6 @@
           <field name="nonQuantitativeAttributeAccuracy" templateModeOnly="true" isMissingLabel="notEvaluated" xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report[gmd:DQ_NonQuantitativeAttributeAccuracy]" del=".">
             <template>
               <values>
-                <key label="conformity_title" xpath="gmd:DQ_NonQuantitativeAttributeAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString" tooltip="dq_title">
-                  <helper name="gmd:title" context="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_NonQuantitativeAttributeAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title"></helper>
-                </key>
-                <key label="conformity_date" xpath="gmd:DQ_NonQuantitativeAttributeAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date" use="date" tooltip="dq_date"/>
                 <key label="explanation" xpath="gmd:DQ_NonQuantitativeAttributeAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:explanation/gco:CharacterString" use="textarea" tooltip="dq_explanation"/>
               </values>
               <snippet>
@@ -560,22 +544,9 @@
                   <gmd:DQ_ConformanceResult>
                     <gmd:specification>
                       <gmd:CI_Citation>
-                        <gmd:title>
-                          <gco:CharacterString>{{conformity_title}}</gco:CharacterString>
-                        </gmd:title>
+                        <gmd:title gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:alternateTitle"/>
-                        <gmd:date>
-                          <gmd:CI_Date>
-                            <gmd:date>
-                              <gco:Date>{{conformity_date}}</gco:Date>
-                            </gmd:date>
-                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode
-                                codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode"
-                                codeListValue="publication"/>
-                            </gmd:dateType>
-                          </gmd:CI_Date>
-                        </gmd:date>
+                        <gmd:date gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:edition"/>
                         <gn:copy select="gmd:editionDate"/>
                         <gn:copy select="gmd:identifier"/>
@@ -605,10 +576,6 @@
           <field name="conceptualConsistency" templateModeOnly="true" isMissingLabel="notEvaluated" xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report[gmd:DQ_ConceptualConsistency]" del=".">
             <template>
               <values>
-                <key label="conformity_title" xpath="gmd:DQ_ConceptualConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString" tooltip="dq_title">
-                  <helper name="gmd:title" context="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_ConceptualConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title"></helper>
-                </key>
-                <key label="conformity_date" xpath="gmd:DQ_ConceptualConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date" use="date" tooltip="dq_date"/>
                 <key label="explanation" xpath="gmd:DQ_ConceptualConsistency/gmd:result/gmd:DQ_ConformanceResult/gmd:explanation/gco:CharacterString" use="textarea" tooltip="dq_explanation"/>
               </values>
               <snippet>
@@ -619,22 +586,9 @@
                   <gmd:DQ_ConformanceResult>
                     <gmd:specification>
                       <gmd:CI_Citation>
-                        <gmd:title>
-                          <gco:CharacterString>{{conformity_title}}</gco:CharacterString>
-                        </gmd:title>
+                        <gmd:title gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:alternateTitle"/>
-                        <gmd:date>
-                          <gmd:CI_Date>
-                            <gmd:date>
-                              <gco:Date>{{conformity_date}}</gco:Date>
-                            </gmd:date>
-                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode
-                                codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode"
-                                codeListValue="publication"/>
-                            </gmd:dateType>
-                          </gmd:CI_Date>
-                        </gmd:date>
+                        <gmd:date gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:edition"/>
                         <gn:copy select="gmd:editionDate"/>
                         <gn:copy select="gmd:identifier"/>
@@ -664,10 +618,6 @@
           <field name="absoluteExternalPositionalAccuracy" templateModeOnly="true" isMissingLabel="notEvaluated" xpath="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report[gmd:DQ_AbsoluteExternalPositionalAccuracy]" del=".">
             <template>
               <values>
-                <key label="conformity_title" xpath="gmd:DQ_AbsoluteExternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title/gco:CharacterString" tooltip="dq_title">
-                  <helper name="gmd:title" context="/mcp:MD_Metadata/gmd:dataQualityInfo/gmd:DQ_DataQuality/gmd:report/gmd:DQ_AbsoluteExternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:title"></helper>
-                </key>
-                <key label="conformity_date" xpath="gmd:DQ_AbsoluteExternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:specification/gmd:CI_Citation/gmd:date/gmd:CI_Date/gmd:date/gco:Date" use="date" tooltip="dq_date"/>
                 <key label="explanation" xpath="gmd:DQ_AbsoluteExternalPositionalAccuracy/gmd:result/gmd:DQ_ConformanceResult/gmd:explanation/gco:CharacterString" use="textarea" tooltip="dq_explanation"/>
               </values>
               <snippet>
@@ -678,22 +628,9 @@
                   <gmd:DQ_ConformanceResult>
                     <gmd:specification>
                       <gmd:CI_Citation>
-                        <gmd:title>
-                          <gco:CharacterString>{{conformity_title}}</gco:CharacterString>
-                        </gmd:title>
+                        <gmd:title gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:alternateTitle"/>
-                        <gmd:date>
-                          <gmd:CI_Date>
-                            <gmd:date>
-                              <gco:Date>{{conformity_date}}</gco:Date>
-                            </gmd:date>
-                            <gmd:dateType>
-                              <gmd:CI_DateTypeCode
-                                codeList="http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/ML_gmxCodelists.xml#CI_DateTypeCode"
-                                codeListValue="publication"/>
-                            </gmd:dateType>
-                          </gmd:CI_Date>
-                        </gmd:date>
+                        <gmd:date gco:nilReasion="inapplicable"/>
                         <gn:copy select="gmd:edition"/>
                         <gn:copy select="gmd:editionDate"/>
                         <gn:copy select="gmd:identifier"/>
@@ -807,9 +744,7 @@
                     <gmd:name>
                       <gco:CharacterString/>
                     </gmd:name>
-                    <gmd:version>
-                      <gco:CharacterString/>
-                    </gmd:version>
+                    <gmd:version gco:nilReason="inapplicable"/>
                   </gmd:MD_Format>
                 </gmd:distributionFormat>
 							</snippet>

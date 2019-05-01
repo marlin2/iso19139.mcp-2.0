@@ -214,7 +214,7 @@
   <resourceContact>Resource Contacts</resourceContact>
   <metadataContact>Metadata Contacts</metadataContact>
   <resourceSpatial>Spatial</resourceSpatial>
-  <resourceExtents>Extents</resourceExtents>
+  <resourceTemporal>Temporal</resourceTemporal>
   <resourceType>Type</resourceType>
   <resourceLineageTab>Lineage</resourceLineageTab>
   <distribution>Distribution</distribution>
