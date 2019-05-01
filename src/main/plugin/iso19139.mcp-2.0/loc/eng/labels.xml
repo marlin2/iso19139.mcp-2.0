@@ -480,7 +480,7 @@ Geographic extent of the data.
   </element>
 	<element name="gmd:name" context="gmd:MD_Format" id="285.0">
 	  <label>Name</label>
-		<description>Name of the data transfer format(s)</description>
+		<description>The format of the dataset.</description>
 		<help>
 			<![CDATA[<p>Please select the <b>most appropriate</b> format or if not known then please select <b>'not yet ascertained'</b>.</p>]]>
 		</help>
@@ -564,4 +564,17 @@ Geographic extent of the data.
 			<option value="NON-DIGITAL - other">NON-DIGITAL - other</option>
 		</helper>
 	</element>
+  <element name="gmd:linkage" id="397.0">
+    <label>Linkage</label>
+    <description>Location (address) for on-line access using a Uniform Resource Locator address or similar addressing scheme such as http://www.statkart.no/isotc211</description>
+    <condition>mandatory</condition>
+  </element>
+  <element name="gmd:name" context="gmd:CI_OnlineResource" id="400.0">
+    <label>Name of the resource</label>
+    <description>Name of the online resource</description>
+  </element>
+  <element name="gmd:description" id="401.0" context="gmd:CI_OnlineResource">
+    <label>Description</label>
+    <description>Detailed text description of what the online resource is/does</description>
+  </element>
 </labels>
