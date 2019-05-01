@@ -445,15 +445,15 @@ Description of the result of the data quality test.
     </description>
 	</element>
 	<element name="gml:timePosition" id="9607.0" context="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/mcp:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:TimePeriodTypeCHOICE_ELEMENT2/gml:begin/gml:TimeInstant/gml:timePosition">
-		<label>Start Time</label>
+		<label>Start Date</label>
 		<description>
-Start time of temporal extent of the data.
+Starting date of temporal extent of the data.
     </description>
 	</element>
 	<element name="gml:timePosition" id="9608.0" context="/mcp:MD_Metadata/gmd:identificationInfo/mcp:MD_DataIdentification/gmd:extent/gmd:EX_Extent/gmd:temporalElement/mcp:EX_TemporalExtent/gmd:extent/gml:TimePeriod/gml:TimePeriodTypeCHOICE_ELEMENT3/gml:end/gml:TimeInstant/gml:timePosition">
-		<label>End Time</label>
+		<label>End Date</label>
 		<description>
-End time of temporal extent of the data.
+Ending date of temporal extent of the data.
     </description>
 	</element>
 	<element name="gml:TimePeriod" id="9604.0">
@@ -576,5 +576,13 @@ Geographic extent of the data.
   <element name="gmd:description" id="401.0" context="gmd:CI_OnlineResource">
     <label>Description</label>
     <description>Detailed text description of what the online resource is/does</description>
+  </element>
+  <element name="gmd:code" id="66013.0" context="gmd:RS_Identifier">
+    <label>Spatial Reference System</label>
+    <description>Description of the spatial reference system used in the dataset</description>
+  </element>
+  <element name="gmd:referenceSystemInfo" id="66014.0">
+    <label>Spatial Reference System</label>
+    <description>Description of the spatial reference system used in the dataset</description>
   </element>
 </labels>
