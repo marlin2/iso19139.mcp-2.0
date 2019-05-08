@@ -272,9 +272,9 @@
                    data-lang="lang"/>
         <!-- <directive data-gn-validation-report=""/> -->
         <!-- <directive data-gn-suggestion-list=""/> -->
-        <!-- relative docUrl in gnGlobalSettings which is set to
+        <!-- relative csiroDocUrl in gnGlobalSettings which is set to
              https://confluence.csiro.au/display/DataCentreShared/ -->
-        <directive data-gn-need-help="MARLIN+Help-+Editing"/>
+        <directive data-gn-need-help="Editing" data-csiro="true"/>
       </sidePanel>
 			<tab id="resourceCitation" default="true" mode="flat">
 				<section>
